@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
 
 const TesterDashboard = () => {
@@ -50,20 +51,24 @@ const TesterDashboard = () => {
           <div className="p-6">
             <h2 className="text-lg font-bold text-text-primary mb-6">Navigation</h2>
             <nav className="space-y-2">
-              {navigationItems.map((item, index) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`slide-in-left w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-105 ${
-                    activeTab === item.id
-                      ? 'bg-accent-red text-white'
-                      : 'text-text-primary hover:bg-gray-700'
-                  }`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  {item.label}
-                </button>
-              ))}
+              <Link
+                to="/tester"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-105 bg-accent-red text-white"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/tester/report"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-105 text-text-primary hover:bg-gray-700"
+              >
+                Report Bug
+              </Link>
+              <Link
+                to="/tester/bugs"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-105 text-text-primary hover:bg-gray-700"
+              >
+                My Bugs
+              </Link>
             </nav>
           </div>
         </div>
@@ -116,12 +121,18 @@ const TesterDashboard = () => {
             <h2 className="fade-in text-2xl font-bold text-text-primary mb-6">Quick Actions</h2>
             <div className="fade-in bg-card-bg p-8 rounded-xl border border-gray-700">
               <div className="flex flex-wrap gap-6 justify-center">
-                <button className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                <Link
+                  to="/tester/report"
+                  className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg inline-block"
+                >
                   Report New Bug
-                </button>
-                <button className="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                </Link>
+                <Link
+                  to="/tester/bugs"
+                  className="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg inline-block"
+                >
                   View My Bugs
-                </button>
+                </Link>
               </div>
             </div>
           </div>

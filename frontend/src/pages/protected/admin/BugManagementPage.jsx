@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
 
 const BugManagementPage = () => {
@@ -141,18 +142,30 @@ const BugManagementPage = () => {
           <div className="p-6">
             <h2 className="text-lg font-bold text-text-primary mb-6">Navigation</h2>
             <nav className="space-y-2">
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              <Link
+                to="/admin"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 Dashboard
-              </button>
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg bg-accent-red text-white transition-all duration-300">
+              </Link>
+              <Link
+                to="/admin/bugs"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg bg-accent-red text-white transition-all duration-300"
+              >
                 Bug Management
-              </button>
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              </Link>
+              <Link
+                to="/admin/users"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 User Management
-              </button>
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              </Link>
+              <Link
+                to="/admin/projects"
+                className="slide-in-left block w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 Project Management
-              </button>
+              </Link>
             </nav>
           </div>
         </div>
@@ -161,7 +174,7 @@ const BugManagementPage = () => {
         <div className="flex-1 p-6">
           {/* Breadcrumb */}
           <div className="fade-in bg-gray-800 px-4 py-2 rounded-lg mb-6">
-            <span className="text-text-muted text-sm">Home > Bug Management</span>
+            <span className="text-text-muted text-sm">Home &gt; Bug Management</span>
           </div>
 
           {/* Page Header */}
