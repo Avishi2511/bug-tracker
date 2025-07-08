@@ -1,0 +1,188 @@
+﻿<svg width="1200" height="1400" viewBox="0 0 1200 1400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="1400" fill="#fafafa"/>
+  
+  <!-- Navbar -->
+  <rect x="0" y="0" width="1200" height="80" fill="#ffffff" stroke="#e5e5e5" stroke-width="1"/>
+  <rect x="60" y="20" width="120" height="40" rx="8" fill="#2563eb" opacity="0.1"/>
+  <text x="120" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563eb">XYZ Corp</text>
+  
+  <!-- Nav Links -->
+  <text x="300" y="45" font-family="Arial, sans-serif" font-size="14" fill="#374151">Home</text>
+  <text x="360" y="45" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">About</text>
+  <text x="420" y="45" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Blog</text>
+  <text x="470" y="45" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Contact</text>
+  
+  <!-- Navigation Menu Icon -->
+  <circle cx="1120" cy="40" r="20" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="1120" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280"></text>
+  
+  <!-- Hero Header Section - Asymmetrical Layout -->
+  <g transform="translate(60, 120)">
+    <!-- Main Headline -->
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#111827">Welcome to XYZ Corp</text>
+    <text x="0" y="75" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#2563eb">Bug Tracker</text>
+    <text x="0" y="115" font-family="Arial, sans-serif" font-size="24" fill="#6b7280">Streamline Development, Eliminate Bugs</text>
+    
+    <!-- Description -->
+    <text x="0" y="155" font-family="Arial, sans-serif" font-size="16" fill="#6b7280">Transform your development workflow with our intuitive</text>
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="16" fill="#6b7280">bug tracking system designed for modern teams.</text>
+  </g>
+  
+  <!-- Dashboard Preview - Right Side -->
+  <g transform="translate(650, 120)">
+    <rect x="0" y="0" width="480" height="200" rx="16" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="0" y="0" width="480" height="50" rx="16" fill="#f9fafb"/>
+    <text x="24" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Live Dashboard Preview</text>
+    
+    <!-- Mini Stats -->
+    <rect x="24" y="70" width="100" height="50" rx="8" fill="#dbeafe"/>
+    <text x="74" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Active Bugs</text>
+    <text x="74" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e40af">23</text>
+    
+    <rect x="140" y="70" width="100" height="50" rx="8" fill="#dcfce7"/>
+    <text x="190" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#166534">Resolved</text>
+    <text x="190" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#166534">189</text>
+    
+    <rect x="256" y="70" width="100" height="50" rx="8" fill="#fef3c7"/>
+    <text x="306" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#92400e">In Progress</text>
+    <text x="306" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#92400e">12</text>
+    
+    <!-- Bug List Preview -->
+    <rect x="24" y="140" width="432" height="40" rx="4" fill="#f8fafc"/>
+    <circle cx="40" cy="160" r="3" fill="#ef4444"/>
+    <text x="55" y="165" font-family="Arial, sans-serif" font-size="10" fill="#374151">Critical: Login validation error</text>
+  </g>
+  
+  <!-- CTA Section -->
+  <g transform="translate(60, 350)">
+    <rect x="0" y="0" width="180" height="60" rx="30" fill="#2563eb"/>
+    <text x="90" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="medium" fill="white">Report a Bug</text>
+    
+    <rect x="200" y="0" width="140" height="60" rx="30" fill="none" stroke="#d1d5db" stroke-width="2"/>
+    <text x="270" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#374151">Login</text>
+    
+    <rect x="360" y="0" width="140" height="60" rx="30" fill="none" stroke="#d1d5db" stroke-width="2"/>
+    <text x="430" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#374151">Register</text>
+  </g>
+  
+  <!-- Features List Section -->
+  <g transform="translate(60, 460)">
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#111827">Why Choose Our Platform?</text>
+    
+    <!-- Feature Cards in Grid -->
+    <!-- Feature 1 -->
+    <rect x="0" y="60" width="350" height="140" rx="12" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <circle cx="40" cy="100" r="20" fill="#3b82f6"/>
+    <text x="40" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white"></text>
+    <text x="80" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#111827">Easy Bug Reporting</text>
+    <text x="80" y="120" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Submit bugs quickly with our intuitive forms.</text>
+    <text x="80" y="140" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Attach files, screenshots, and detailed descriptions.</text>
+    <text x="80" y="160" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Automatic priority assignment and routing.</text>
+    
+    <!-- Feature 2 -->
+    <rect x="370" y="60" width="350" height="140" rx="12" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <circle cx="410" cy="100" r="20" fill="#10b981"/>
+    <text x="410" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white"></text>
+    <text x="450" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#111827">Team Collaboration</text>
+    <text x="450" y="120" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Real-time collaboration between teams.</text>
+    <text x="450" y="140" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Assign bugs to developers instantly.</text>
+    <text x="450" y="160" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Track progress with live updates.</text>
+    
+    <!-- Feature 3 -->
+    <rect x="740" y="60" width="350" height="140" rx="12" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    <circle cx="780" cy="100" r="20" fill="#f59e0b"/>
+    <text x="780" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white"></text>
+    <text x="820" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#111827">Advanced Analytics</text>
+    <text x="820" y="120" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Comprehensive reporting and insights.</text>
+    <text x="820" y="140" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Track resolution times and patterns.</text>
+    <text x="820" y="160" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Performance metrics and trends.</text>
+  </g>
+  
+  <!-- Stats Section -->
+  <g transform="translate(60, 680)">
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#111827">Platform Statistics</text>
+    
+    <!-- Stats Cards -->
+    <rect x="0" y="60" width="200" height="100" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="100" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2563eb">10,000+</text>
+    <text x="100" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Bugs Resolved</text>
+    <text x="100" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">This Year</text>
+    
+    <rect x="220" y="60" width="200" height="100" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="320" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#10b981">500+</text>
+    <text x="320" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Active Users</text>
+    <text x="320" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Daily</text>
+    
+    <rect x="440" y="60" width="200" height="100" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="540" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#f59e0b">99.9%</text>
+    <text x="540" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Uptime</text>
+    <text x="540" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Reliability</text>
+    
+    <rect x="660" y="60" width="200" height="100" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="760" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#8b5cf6">24/7</text>
+    <text x="760" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Support</text>
+    <text x="760" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Available</text>
+  </g>
+  
+  <!-- Testimonial Section -->
+  <g transform="translate(60, 860)">
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#111827">What Our Users Say</text>
+    
+    <!-- Testimonial Cards -->
+    <rect x="0" y="60" width="520" height="120" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="20" y="85" font-family="Arial, sans-serif" font-size="14" fill="#374151">"XYZ Corp Bug Tracker has revolutionized our development workflow.</text>
+    <text x="20" y="105" font-family="Arial, sans-serif" font-size="14" fill="#374151">The intuitive interface and powerful features have reduced our</text>
+    <text x="20" y="125" font-family="Arial, sans-serif" font-size="14" fill="#374151">bug resolution time by 60%. Highly recommended!"</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2563eb">- Sarah Johnson, Lead Developer</text>
+    
+    <rect x="560" y="60" width="520" height="120" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <text x="580" y="85" font-family="Arial, sans-serif" font-size="14" fill="#374151">"The collaboration features are outstanding. Our QA and development</text>
+    <text x="580" y="105" font-family="Arial, sans-serif" font-size="14" fill="#374151">teams can now work seamlessly together. The real-time updates</text>
+    <text x="580" y="125" font-family="Arial, sans-serif" font-size="14" fill="#374151">keep everyone in the loop."</text>
+    <text x="580" y="155" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#10b981">- Mike Chen, QA Manager</text>
+  </g>
+  
+  <!-- About Section -->
+  <g transform="translate(60, 1040)">
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#111827">About XYZ Corp</text>
+    
+    <rect x="0" y="60" width="1080" height="100" rx="12" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="30" y="85" font-family="Arial, sans-serif" font-size="16" fill="#374151">Founded in 2020, XYZ Corp has been at the forefront of development tools innovation.</text>
+    <text x="30" y="110" font-family="Arial, sans-serif" font-size="16" fill="#374151">Our mission is to streamline software development processes and eliminate the friction</text>
+    <text x="30" y="135" font-family="Arial, sans-serif" font-size="16" fill="#374151">in bug tracking and resolution. Trusted by over 1000+ companies worldwide.</text>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="950" cy="200" r="60" fill="#f3f4f6" opacity="0.4"/>
+  <circle cx="1050" cy="300" r="30" fill="#dbeafe" opacity="0.6"/>
+  <circle cx="150" cy="1200" r="40" fill="#fef3c7" opacity="0.5"/>
+  
+  <!-- Footer -->
+  <rect x="0" y="1200" width="1200" height="200" fill="#1f2937"/>
+  
+  <!-- Footer Content -->
+  <g transform="translate(60, 1230)">
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff">XYZ Corp Bug Tracker</text>
+    <text x="0" y="55" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Streamlining development workflows worldwide</text>
+    
+    <!-- Footer Links -->
+    <text x="300" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="medium" fill="#ffffff">Quick Links</text>
+    <text x="300" y="55" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">About Us</text>
+    <text x="300" y="75" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Blog</text>
+    <text x="300" y="95" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Contact</text>
+    
+    <text x="450" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="medium" fill="#ffffff">Support</text>
+    <text x="450" y="55" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Documentation</text>
+    <text x="450" y="75" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Help Center</text>
+    <text x="450" y="95" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Contact Support</text>
+    
+    <text x="600" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="medium" fill="#ffffff">Connect</text>
+    <text x="600" y="55" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Twitter</text>
+    <text x="600" y="75" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">LinkedIn</text>
+    <text x="600" y="95" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">GitHub</text>
+    
+    <!-- Copyright -->
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="12" fill="#6b7280"> 2025 XYZ Corp. All rights reserved. | Privacy Policy | Terms of Service</text>
+  </g>
+</svg>

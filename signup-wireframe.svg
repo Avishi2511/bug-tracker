@@ -1,0 +1,174 @@
+﻿<svg width="1200" height="900" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#fafafa"/>
+  
+  <!-- Navbar -->
+  <rect x="0" y="0" width="1200" height="80" fill="#ffffff" stroke="#e5e5e5" stroke-width="1"/>
+  <rect x="60" y="20" width="120" height="40" rx="8" fill="#2563eb" opacity="0.1"/>
+  <text x="120" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2563eb">XYZ Corp</text>
+  
+  <!-- Back to Home Link -->
+  <text x="300" y="45" font-family="Arial, sans-serif" font-size="14" fill="#6b7280"> Back to Home</text>
+  
+  <!-- Navigation Menu Icon -->
+  <circle cx="1120" cy="40" r="20" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="1120" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280"></text>
+  
+  <!-- Main Content - Asymmetrical Layout -->
+  
+  <!-- Left Side - Welcome Content -->
+  <g transform="translate(80, 120)">
+    <!-- Welcome Message -->
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#111827">Join Our Team</text>
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="24" fill="#6b7280">Create your account</text>
+    
+    <!-- Description -->
+    <text x="0" y="120" font-family="Arial, sans-serif" font-size="16" fill="#6b7280">Get started with XYZ Corp Bug Tracker</text>
+    <text x="0" y="145" font-family="Arial, sans-serif" font-size="16" fill="#6b7280">and streamline your development workflow.</text>
+    
+    <!-- Role Information -->
+    <g transform="translate(0, 200)">
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#111827">Available Roles:</text>
+      
+      <!-- Tester Role -->
+      <rect x="0" y="40" width="400" height="80" rx="12" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+      <circle cx="30" cy="65" r="12" fill="#3b82f6"/>
+      <text x="30" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white"></text>
+      <text x="55" y="65" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">Tester</text>
+      <text x="55" y="85" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Report bugs, track issues, and collaborate with developers</text>
+      <text x="55" y="105" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">to ensure quality software delivery.</text>
+      
+      <!-- Developer Role -->
+      <rect x="0" y="140" width="400" height="80" rx="12" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+      <circle cx="30" cy="165" r="12" fill="#10b981"/>
+      <text x="30" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white"></text>
+      <text x="55" y="165" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#111827">Developer</text>
+      <text x="55" y="185" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Resolve assigned bugs, update status, and manage</text>
+      <text x="55" y="205" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">your development workflow efficiently.</text>
+    </g>
+    
+    <!-- Security Note -->
+    <g transform="translate(0, 450)">
+      <rect x="0" y="0" width="400" height="60" rx="8" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+      <circle cx="20" cy="20" r="8" fill="#0ea5e9"/>
+      <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white"></text>
+      <text x="40" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#0c4a6e">Secure Registration</text>
+      <text x="40" y="45" font-family="Arial, sans-serif" font-size="12" fill="#075985">Your data is protected with enterprise-grade security</text>
+    </g>
+  </g>
+  
+  <!-- Right Side - Registration Form -->
+  <g transform="translate(580, 120)">
+    <!-- Form Container -->
+    <rect x="0" y="0" width="520" height="680" rx="16" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+    
+    <!-- Form Header -->
+    <text x="260" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#111827">Create Account</text>
+    <text x="260" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Fill in your details to get started</text>
+    
+    <!-- Name Fields Row -->
+    <g transform="translate(40, 100)">
+      <!-- First Name -->
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">First Name *</text>
+      <rect x="0" y="25" width="200" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="15" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Enter first name</text>
+      
+      <!-- Last Name -->
+      <text x="220" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Last Name *</text>
+      <rect x="220" y="25" width="200" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="235" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Enter last name</text>
+    </g>
+    
+    <!-- Username Field -->
+    <g transform="translate(40, 200)">
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Username *</text>
+      <rect x="0" y="25" width="440" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="15" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Choose a unique username</text>
+      <text x="400" y="52" font-family="Arial, sans-serif" font-size="12" fill="#10b981"></text>
+    </g>
+    
+    <!-- Email Field -->
+    <g transform="translate(40, 290)">
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Email Address *</text>
+      <rect x="0" y="25" width="440" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="15" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Enter your email address</text>
+    </g>
+    
+    <!-- Password Fields Row -->
+    <g transform="translate(40, 380)">
+      <!-- Password -->
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Password *</text>
+      <rect x="0" y="25" width="200" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="15" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Create password</text>
+      <text x="170" y="52" font-family="Arial, sans-serif" font-size="12" fill="#6b7280"></text>
+      
+      <!-- Confirm Password -->
+      <text x="220" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Confirm Password *</text>
+      <rect x="220" y="25" width="200" height="45" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <text x="235" y="52" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af">Confirm password</text>
+      <text x="390" y="52" font-family="Arial, sans-serif" font-size="12" fill="#6b7280"></text>
+    </g>
+    
+    <!-- Password Requirements -->
+    <g transform="translate(40, 450)">
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Password must contain:</text>
+      <text x="0" y="35" font-family="Arial, sans-serif" font-size="11" fill="#10b981"> At least 8 characters</text>
+      <text x="150" y="35" font-family="Arial, sans-serif" font-size="11" fill="#6b7280"> One uppercase letter</text>
+      <text x="300" y="35" font-family="Arial, sans-serif" font-size="11" fill="#6b7280"> One number</text>
+    </g>
+    
+    <!-- Role Selection -->
+    <g transform="translate(40, 490)">
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#374151">Select Role *</text>
+      
+      <!-- Tester Option -->
+      <rect x="0" y="30" width="200" height="60" rx="8" fill="#f9fafb" stroke="#2563eb" stroke-width="2"/>
+      <circle cx="20" cy="50" r="6" fill="#2563eb"/>
+      <circle cx="20" cy="50" r="3" fill="#ffffff"/>
+      <text x="40" y="50" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#111827">Tester</text>
+      <text x="40" y="70" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">QA and testing role</text>
+      
+      <!-- Developer Option -->
+      <rect x="220" y="30" width="200" height="60" rx="8" fill="#f9fafb" stroke="#d1d5db" stroke-width="1"/>
+      <circle cx="240" cy="50" r="6" fill="none" stroke="#d1d5db" stroke-width="2"/>
+      <text x="260" y="50" font-family="Arial, sans-serif" font-size="14" fill="#374151">Developer</text>
+      <text x="260" y="70" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Development role</text>
+    </g>
+    
+    <!-- Terms and Conditions -->
+    <g transform="translate(40, 580)">
+      <rect x="0" y="0" width="15" height="15" rx="3" fill="#2563eb"/>
+      <text x="10" y="11" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white"></text>
+      <text x="25" y="12" font-family="Arial, sans-serif" font-size="14" fill="#374151">I agree to the</text>
+      <text x="120" y="12" font-family="Arial, sans-serif" font-size="14" fill="#2563eb">Terms of Service</text>
+      <text x="230" y="12" font-family="Arial, sans-serif" font-size="14" fill="#374151">and</text>
+      <text x="260" y="12" font-family="Arial, sans-serif" font-size="14" fill="#2563eb">Privacy Policy</text>
+    </g>
+    
+    <!-- Create Account Button -->
+    <rect x="40" y="620" width="440" height="50" rx="25" fill="#2563eb"/>
+    <text x="260" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="medium" fill="white">Create Account</text>
+  </g>
+  
+  <!-- Login Link -->
+  <g transform="translate(580, 820)">
+    <text x="260" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Already have an account?</text>
+    <text x="260" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="medium" fill="#2563eb">Sign in here</text>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="150" cy="750" r="30" fill="#dbeafe" opacity="0.5"/>
+  <circle cx="1050" cy="200" r="50" fill="#f3f4f6" opacity="0.4"/>
+  <circle cx="1150" cy="700" r="25" fill="#fef3c7" opacity="0.6"/>
+  
+  <!-- Form Validation States (Hidden by default) -->
+  <!-- Error State Example -->
+  <g transform="translate(580, 120)" opacity="0">
+    <rect x="40" y="340" width="440" height="20" fill="#fef2f2"/>
+    <text x="55" y="353" font-family="Arial, sans-serif" font-size="12" fill="#dc2626">Email address is already registered</text>
+  </g>
+  
+  <!-- Footer -->
+  <rect x="0" y="820" width="1200" height="80" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="600" y="865" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#6b7280"> 2025 XYZ Corp. Join thousands of developers using our platform.</text>
+</svg>

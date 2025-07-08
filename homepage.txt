@@ -1,0 +1,56 @@
+Page: **Home**
+ - Navbar
+ - Hero Header Section: Strong welcome message with tagline about what XYZ Corp Bug Tracker does
+ - Features List Section: Three feature highlights showcasing what the app does and why it’s useful. Each feature presented in a visually engaging card format with icons.
+ - CTA Section: Three clear buttons: “Report a Bug”, “Login”, “Register” placed prominently to guide user actions
+ - Testimonial Section: User testimonials or reviews showcasing positive feedback from users
+ - Stats Section: Key statistics about the platform’s usage, bug resolutions, and user satisfaction
+ - About Section: Short introduction about the company and the team behind XYZ Corp Bug Tracker
+ - Footer
+
+Sub-pages: Page 6, About Us, Blog, Contact Us
+
+
+Page: **Page 6**
+
+Page: **About Us**
+ - Navbar
+ - Header Section: Engaging header with the title "About Us" and a brief description of the company's mission and vision.
+ - About Section: Detailed description of XYZ Corp Bug Tracker, including its history, mission, and core values.
+ - Feature Section: Highlight the unique selling points and key features of the bug tracking platform.
+ - Team Section: Showcase the team members with their photos, names, roles, and short bios.
+ - Gallery Section: Image gallery displaying the office, team events, and company culture.
+ - Testimonial Section: Customer testimonials and success stories to build trust and credibility.
+ - How It Works Section: Step-by-step explanation of how the bug tracking platform works.
+ - Locations Section: Details of office locations with a map and contact information.
+ - Footer
+
+Page: **Blog**
+ - Navbar
+ - Featured Blog List Header Section: Introduction to the blog with a brief welcome message and a highlight of featured posts
+ - Blog List Section: A list of blog posts presented in a visually appealing manner, each with a title, short excerpt, and thumbnail image
+ - Newsletter Section: A call-to-action section encouraging users to subscribe to the newsletter for updates and new blog post notifications
+ - FAQ Section: Frequently asked questions about the blog, content, and how users can contribute or ask questions
+ - Footer
+
+Sub-pages: Blog Post
+
+
+Page: **Blog Post**
+ - Navbar
+ - Blog Post Header Section: Header with the blog post title, author name, publication date, and featured image.
+ - Blog Post Body Section: Main content area for the blog post text, images, and other media.
+ - Testimonial Section: User testimonials or reviews related to the blog post content (optional, if relevant).
+ - Blog List Section: List of related blog posts to encourage further reading.
+ - CTA Section: Call to action at the end of the post, encouraging readers to share the post, leave comments, or read related articles.
+ - Newsletter Section: Newsletter signup form to capture reader's email for future updates.
+ - Footer
+
+Page: **Contact Us**
+ - Navbar
+ - Header Section: A welcoming header section with a title "Get in Touch" and a brief introductory message inviting users to reach out.
+ - Contact Section: Details about how to contact XYZ Corp Bug Tracker including office address, phone number, and email address.
+ - Contact Form Section: A user-friendly contact form for visitors to send messages directly through the website. Fields for name, email, subject, and message.
+ - Locations Section: A map section showing the physical location(s) of XYZ Corp Bug Tracker’s offices.
+ - FAQ Section: Frequently asked questions to help users find quick answers to common inquiries.
+ - Footer
