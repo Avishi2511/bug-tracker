@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
 
 const DeveloperDashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({
     assignedBugs: 0,
@@ -12,6 +14,22 @@ const DeveloperDashboard = () => {
       low: 0
     }
   });
+
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'dashboard':
+        navigate('/developer');
+        break;
+      case 'assigned':
+        navigate('/developer/assigned');
+        break;
+      case 'history':
+        navigate('/developer/history');
+        break;
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     // Mock data loading
@@ -55,7 +73,7 @@ const DeveloperDashboard = () => {
               {navigationItems.map((item, index) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => handleNavigation(item.id)}
                   className={`slide-in-left w-full text-left px-4 py-3 rounded-lg transition-all duration-300 hover:scale-105 ${
                     activeTab === item.id
                       ? 'bg-accent-red text-white'
@@ -122,10 +140,16 @@ const DeveloperDashboard = () => {
             <h2 className="fade-in text-2xl font-bold text-text-primary mb-6">Quick Actions</h2>
             <div className="fade-in bg-card-bg p-8 rounded-xl border border-gray-700">
               <div className="flex flex-wrap gap-6 justify-center">
-                <button className="bg-orange-600 hover:bg-orange-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                <button 
+                  onClick={() => handleNavigation('assigned')}
+                  className="bg-orange-600 hover:bg-orange-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                >
                   View Assigned Bugs
                 </button>
-                <button className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                <button 
+                  onClick={() => handleNavigation('assigned')}
+                  className="bg-purple-600 hover:bg-purple-700 px-8 py-4 rounded-lg text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                >
                   Update Bug Status
                 </button>
               </div>
@@ -161,7 +185,10 @@ const DeveloperDashboard = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="px-3 py-1 bg-red-600 text-white text-sm rounded-full">Critical</span>
-                    <button className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors">
+                    <button 
+                      onClick={() => handleNavigation('assigned')}
+                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
+                    >
                       View
                     </button>
                   </div>
@@ -174,7 +201,10 @@ const DeveloperDashboard = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="px-3 py-1 bg-orange-600 text-white text-sm rounded-full">High</span>
-                    <button className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors">
+                    <button 
+                      onClick={() => handleNavigation('assigned')}
+                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
+                    >
                       View
                     </button>
                   </div>
@@ -187,7 +217,10 @@ const DeveloperDashboard = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="px-3 py-1 bg-yellow-600 text-white text-sm rounded-full">Medium</span>
-                    <button className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors">
+                    <button 
+                      onClick={() => handleNavigation('assigned')}
+                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
+                    >
                       View
                     </button>
                   </div>

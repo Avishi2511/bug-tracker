@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
 
 const ReportBugPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     project: '',
     title: '',
@@ -17,6 +19,22 @@ const ReportBugPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [bugId, setBugId] = useState('');
+
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'dashboard':
+        navigate('/tester');
+        break;
+      case 'report':
+        navigate('/tester/report');
+        break;
+      case 'bugs':
+        navigate('/tester/bugs');
+        break;
+      default:
+        break;
+    }
+  };
 
   const projects = [
     { id: 'web-app', name: 'Web Application' },
@@ -128,13 +146,19 @@ const ReportBugPage = () => {
           <div className="p-6">
             <h2 className="text-lg font-bold text-text-primary mb-6">Navigation</h2>
             <nav className="space-y-2">
-              <button className="w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              <button 
+                onClick={() => handleNavigation('dashboard')}
+                className="w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 Dashboard
               </button>
               <button className="w-full text-left px-4 py-3 rounded-lg bg-accent-red text-white transition-all duration-300">
                 Report Bug
               </button>
-              <button className="w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              <button 
+                onClick={() => handleNavigation('bugs')}
+                className="w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 My Bugs
               </button>
             </nav>
@@ -145,7 +169,7 @@ const ReportBugPage = () => {
         <div className="flex-1 p-6">
           {/* Breadcrumb */}
           <div className="bg-gray-800 px-4 py-2 rounded-lg mb-6">
-            <span className="text-text-muted text-sm">Home > Report Bug</span>
+            <span className="text-text-muted text-sm">Home &gt; Report Bug</span>
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -407,7 +431,10 @@ const ReportBugPage = () => {
                       Report Another Bug
                     </button>
                     
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105">
+                    <button 
+                      onClick={() => handleNavigation('bugs')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105"
+                    >
                       View My Bugs
                     </button>
                   </div>

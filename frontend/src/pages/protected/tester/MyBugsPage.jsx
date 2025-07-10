@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
 
 const MyBugsPage = () => {
+  const navigate = useNavigate();
   const [bugs, setBugs] = useState([]);
   const [filteredBugs, setFilteredBugs] = useState([]);
   const [filters, setFilters] = useState({
@@ -11,6 +13,22 @@ const MyBugsPage = () => {
   });
   const [selectedBug, setSelectedBug] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'dashboard':
+        navigate('/tester');
+        break;
+      case 'report':
+        navigate('/tester/report');
+        break;
+      case 'bugs':
+        navigate('/tester/bugs');
+        break;
+      default:
+        break;
+    }
+  };
 
   // Mock data for bugs reported by current tester
   const mockBugs = [
@@ -146,10 +164,16 @@ const MyBugsPage = () => {
           <div className="p-6">
             <h2 className="text-lg font-bold text-text-primary mb-6">Navigation</h2>
             <nav className="space-y-2">
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              <button 
+                onClick={() => handleNavigation('dashboard')}
+                className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 Dashboard
               </button>
-              <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300">
+              <button 
+                onClick={() => handleNavigation('report')}
+                className="slide-in-left w-full text-left px-4 py-3 rounded-lg text-text-primary hover:bg-gray-700 transition-all duration-300"
+              >
                 Report Bug
               </button>
               <button className="slide-in-left w-full text-left px-4 py-3 rounded-lg bg-accent-red text-white transition-all duration-300">
@@ -163,7 +187,7 @@ const MyBugsPage = () => {
         <div className="flex-1 p-6">
           {/* Breadcrumb */}
           <div className="fade-in bg-gray-800 px-4 py-2 rounded-lg mb-6">
-            <span className="text-text-muted text-sm">Home > My Bugs</span>
+            <span className="text-text-muted text-sm">Home &gt; My Bugs</span>
           </div>
 
           {/* Page Header */}
