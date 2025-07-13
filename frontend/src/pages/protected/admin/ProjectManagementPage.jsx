@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { mockProjects } from '../../../data/mockProjects';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const ProjectManagementPage = () => {
+  const { user: currentUser } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newProject, setNewProject] = useState({
     name: '',
     description: '',
     status: 'active'
   });
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleNavigation = (tab) => {
     switch (tab) {
@@ -33,8 +38,29 @@ const ProjectManagementPage = () => {
   };
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty arrays
+    const fetchProjects = async () => {
+      try {
+        const response = await api.getProjects();
+        console.log('Projects API response:', response.data); // Debug log
+        
+        if (response.data.success) {
+          // The projects are nested in response.data.data.projects
+          const projectsData = response.data.data.projects || response.data.data || [];
+          // Ensure we always set an array
+          setProjects(Array.isArray(projectsData) ? projectsData : []);
+        } else {
+          setProjects([]);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setErrors({ fetch: 'Failed to load projects' });
+        setProjects([]); // Ensure projects is always an array
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -54,31 +80,60 @@ const ProjectManagementPage = () => {
     }
   };
 
-  const handleCreateProject = (e) => {
+  const handleCreateProject = async (e) => {
     e.preventDefault();
-    const project = {
-      id: projects.length + 1,
-      ...newProject,
-      createdAt: new Date().toISOString().split('T')[0],
-      bugsCount: 0
-    };
-    setProjects([...projects, project]);
-    setNewProject({ name: '', description: '', status: 'active' });
-    setShowCreateModal(false);
-  };
-
-  const handleDeleteProject = (projectId) => {
-    if (window.confirm('Are you sure you want to delete this project? This will also delete all associated bugs.')) {
-      setProjects(projects.filter(project => project.id !== projectId));
+    setErrors({});
+    
+    try {
+      const response = await api.createProject(newProject);
+      
+      if (response.data.success) {
+        setProjects([...projects, response.data.data.project]);
+        setSuccessMessage('Project created successfully!');
+        setNewProject({ name: '', description: '', status: 'active' });
+        setShowCreateModal(false);
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => setSuccessMessage(''), 3000);
+      }
+    } catch (error) {
+      setErrors({ 
+        submit: error.response?.data?.message || 'Failed to create project. Please try again.' 
+      });
     }
   };
 
-  const changeProjectStatus = (projectId, newStatus) => {
-    setProjects(projects.map(project => 
-      project.id === projectId 
-        ? { ...project, status: newStatus }
-        : project
-    ));
+  const handleDeleteProject = async (projectId) => {
+    if (window.confirm('Are you sure you want to delete this project? This will also delete all associated bugs.')) {
+      try {
+        await api.deleteProject(projectId);
+        setProjects(projects.filter(project => project._id !== projectId));
+        setSuccessMessage('Project deleted successfully!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } catch (error) {
+        setErrors({ 
+          delete: error.response?.data?.message || 'Failed to delete project. Please try again.' 
+        });
+      }
+    }
+  };
+
+  const changeProjectStatus = async (projectId, newStatus) => {
+    try {
+      await api.updateProject(projectId, { status: newStatus });
+      
+      setProjects(projects.map(project => 
+        project._id === projectId 
+          ? { ...project, status: newStatus }
+          : project
+      ));
+      setSuccessMessage(`Project status updated to ${newStatus}!`);
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      setErrors({ 
+        update: error.response?.data?.message || 'Failed to update project status. Please try again.' 
+      });
+    }
   };
 
   return (
@@ -137,54 +192,77 @@ const ProjectManagementPage = () => {
             </button>
           </div>
 
+          {/* Success/Error Messages */}
+          {successMessage && (
+            <div className="fade-in mb-6 p-4 bg-green-600/10 border border-green-600 rounded-lg">
+              <p className="text-green-600">{successMessage}</p>
+            </div>
+          )}
+          
+          {(errors.fetch || errors.delete || errors.update) && (
+            <div className="fade-in mb-6 p-4 bg-red-600/10 border border-red-600 rounded-lg">
+              <p className="text-red-600">{errors.fetch || errors.delete || errors.update}</p>
+            </div>
+          )}
+
           {/* Projects Grid */}
           <div className="fade-in grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {projects.map((project) => (
-              <div key={project.id} className="bg-card-bg p-6 rounded-xl border border-gray-700 hover:scale-105 transition-all duration-300">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-bold text-text-primary">{project.name}</h3>
-                  <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(project.status)}`}>
-                    {project.status.toUpperCase()}
-                  </span>
-                </div>
-                
-                <p className="text-text-muted mb-4 text-sm">{project.description}</p>
-                
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Created:</span>
-                    <span className="text-text-primary">{new Date(project.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-muted">Bugs:</span>
-                    <span className="text-text-primary">{project.bugsCount}</span>
-                  </div>
-                </div>
-
-                <div className="flex space-x-2 mt-6">
-                  <button className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-white text-xs transition-colors flex-1">
-                    Edit
-                  </button>
-                  <div className="relative">
-                    <select
-                      value={project.status}
-                      onChange={(e) => changeProjectStatus(project.id, e.target.value)}
-                      className="bg-yellow-600 hover:bg-yellow-700 px-3 py-2 rounded text-white text-xs transition-colors appearance-none pr-8"
-                    >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                      <option value="archived">Archived</option>
-                    </select>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteProject(project.id)}
-                    className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-white text-xs transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
+            {loading ? (
+              <div className="col-span-full text-center py-8 text-text-muted">
+                Loading projects...
               </div>
-            ))}
+            ) : !Array.isArray(projects) || projects.length === 0 ? (
+              <div className="col-span-full text-center py-8 text-text-muted">
+                No projects found. Create your first project to get started.
+              </div>
+            ) : (
+              projects.map((project) => (
+                <div key={project._id} className="bg-card-bg p-6 rounded-xl border border-gray-700 hover:scale-105 transition-all duration-300">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-bold text-text-primary">{project.name}</h3>
+                    <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(project.status)}`}>
+                      {project.status.toUpperCase()}
+                    </span>
+                  </div>
+                  
+                  <p className="text-text-muted mb-4 text-sm">{project.description}</p>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-text-muted">Created:</span>
+                      <span className="text-text-primary">{new Date(project.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-muted">Bugs:</span>
+                      <span className="text-text-primary">{project.bugsCount || 0}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2 mt-6">
+                    <button className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-white text-xs transition-colors flex-1">
+                      Edit
+                    </button>
+                    <div className="relative">
+                      <select
+                        value={project.status}
+                        onChange={(e) => changeProjectStatus(project._id, e.target.value)}
+                        className="bg-yellow-600 hover:bg-yellow-700 px-3 py-2 rounded text-white text-xs transition-colors appearance-none pr-8"
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="archived">Archived</option>
+                      </select>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteProject(project._id)}
+                      className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-white text-xs transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Projects Table */}
@@ -206,33 +284,47 @@ const ProjectManagementPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
-                  {projects.map((project) => (
-                    <tr key={project.id} className="hover:bg-gray-800 transition-colors">
-                      <td className="px-6 py-4 text-sm text-text-primary">#{project._id.slice(-6)}</td>
-                      <td className="px-6 py-4 text-sm text-text-primary font-medium">{project.name}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{project.description}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(project.status)}`}>
-                          {project.status.toUpperCase()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-text-primary">{project.bugsCount}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(project.createdAt).toLocaleDateString()}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex space-x-2">
-                          <button className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors">
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteProject(project.id)}
-                            className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-xs transition-colors"
-                          >
-                            Delete
-                          </button>
-                        </div>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-text-muted">
+                        Loading projects...
                       </td>
                     </tr>
-                  ))}
+                  ) : projects.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-text-muted">
+                        No projects found. Create your first project to get started.
+                      </td>
+                    </tr>
+                  ) : (
+                    projects.map((project) => (
+                      <tr key={project._id} className="hover:bg-gray-800 transition-colors">
+                        <td className="px-6 py-4 text-sm text-text-primary">#{project._id.slice(-6)}</td>
+                        <td className="px-6 py-4 text-sm text-text-primary font-medium">{project.name}</td>
+                        <td className="px-6 py-4 text-sm text-text-muted">{project.description}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(project.status)}`}>
+                            {project.status.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-text-primary">{project.bugsCount || 0}</td>
+                        <td className="px-6 py-4 text-sm text-text-muted">{new Date(project.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex space-x-2">
+                            <button className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors">
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProject(project._id)}
+                              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-xs transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -294,6 +386,12 @@ const ProjectManagementPage = () => {
                   <option value="archived">Archived</option>
                 </select>
               </div>
+
+              {errors.submit && (
+                <div className="p-3 bg-red-600/10 border border-red-600 rounded-lg">
+                  <p className="text-sm text-red-600">{errors.submit}</p>
+                </div>
+              )}
 
               <div className="flex justify-end space-x-4 mt-6">
                 <button

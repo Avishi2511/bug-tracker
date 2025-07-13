@@ -21,22 +21,28 @@ const TesterDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch bugs reported by current user
-        const bugsResponse = await api.getBugs({ reportedBy: user?.id });
+        // Fetch bugs reported by current user (backend filters by role automatically)
+        const bugsResponse = await api.getBugs();
+        
+        console.log('Dashboard bugs API response:', bugsResponse.data); // Debug log
         
         if (bugsResponse.data.success) {
-          const userBugs = bugsResponse.data.data;
+          // Bugs are nested in response.data.data.bugs
+          const userBugs = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          
+          // Ensure userBugs is an array
+          const bugsArray = Array.isArray(userBugs) ? userBugs : [];
           
           // Calculate statistics
-          const bugsReported = userBugs.length;
+          const bugsReported = bugsArray.length;
           const statusBreakdown = {
-            open: userBugs.filter(bug => bug.status === 'open').length,
-            inProgress: userBugs.filter(bug => bug.status === 'in-progress').length,
-            closed: userBugs.filter(bug => bug.status === 'closed').length
+            open: bugsArray.filter(bug => bug.status === 'open').length,
+            inProgress: bugsArray.filter(bug => bug.status === 'in-progress').length,
+            closed: bugsArray.filter(bug => bug.status === 'closed').length
           };
           
           // Get recent reports (last 5)
-          const recentReports = userBugs
+          const recentReports = bugsArray
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
             .slice(0, 5)
             .map(bug => ({

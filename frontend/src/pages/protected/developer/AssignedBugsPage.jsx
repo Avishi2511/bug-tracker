@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { getBugsByAssignee } from '../../../data/mockBugs';
-import { mockProjects } from '../../../data/mockProjects';
-import { mockUsers } from '../../../data/mockUsers';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const AssignedBugsPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [bugs, setBugs] = useState([]);
   const [filteredBugs, setFilteredBugs] = useState([]);
@@ -17,6 +17,7 @@ const AssignedBugsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [progressNotes, setProgressNotes] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const handleNavigation = (tab) => {
     switch (tab) {
@@ -35,8 +36,29 @@ const AssignedBugsPage = () => {
   };
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty arrays
+    const fetchAssignedBugs = async () => {
+      try {
+        // Fetch bugs assigned to current developer (backend filters by role automatically)
+        const bugsResponse = await api.getBugs();
+        
+        console.log('Assigned Bugs API response:', bugsResponse.data);
+        
+        if (bugsResponse.data.success) {
+          // Bugs are nested in response.data.data.bugs
+          const assignedBugs = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          setBugs(Array.isArray(assignedBugs) ? assignedBugs : []);
+        }
+      } catch (error) {
+        console.error('Error fetching assigned bugs:', error);
+        setBugs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchAssignedBugs();
+    }
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -45,7 +67,7 @@ const AssignedBugsPage = () => {
         el.classList.add('visible');
       }, index * 100);
     });
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let filtered = bugs;
@@ -108,15 +130,37 @@ const AssignedBugsPage = () => {
     setShowModal(true);
   };
 
-  const handleUpdateStatus = () => {
+  const handleUpdateStatus = async () => {
     if (selectedBug && newStatus !== selectedBug.status) {
-      setBugs(bugs.map(bug => 
-        bug.id === selectedBug.id 
-          ? { ...bug, status: newStatus, updatedAt: new Date().toISOString().split('T')[0] }
-          : bug
-      ));
-      setShowModal(false);
-      // In real app, this would make an API call
+      try {
+        console.log('Updating bug status:', {
+          bugId: selectedBug._id,
+          newStatus,
+          progressNotes,
+          currentUser: user
+        });
+
+        const response = await api.updateBugStatus(selectedBug._id, newStatus, progressNotes);
+        
+        console.log('Status update response:', response.data);
+        
+        if (response.data.success) {
+          // Update the bug in local state
+          setBugs(bugs.map(bug => 
+            bug._id === selectedBug._id 
+              ? { ...bug, status: newStatus, updatedAt: new Date().toISOString() }
+              : bug
+          ));
+          setShowModal(false);
+          alert('Bug status updated successfully!');
+        } else {
+          alert('Failed to update bug status: ' + response.data.message);
+        }
+      } catch (error) {
+        console.error('Error updating bug status:', error);
+        console.error('Error response:', error.response?.data);
+        alert('Failed to update bug status: ' + (error.response?.data?.message || error.message));
+      }
     }
   };
 
@@ -245,70 +289,78 @@ const AssignedBugsPage = () => {
 
           {/* Bugs List */}
           <div className="fade-in space-y-4">
-            {filteredBugs.map((bug) => (
-              <div key={bug.id} className={`bg-card-bg p-6 rounded-xl border-l-4 ${getPriorityBorderColor(bug.priority)} border-r border-t border-b border-gray-700 hover:scale-105 transition-all duration-300`}>
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h3 className="text-lg font-bold text-text-primary">{bug.title}</h3>
-                      <span className="text-text-muted text-sm">#{bug._id.slice(-6)}</span>
-                    </div>
-                    
-                    <p className="text-text-muted text-sm mb-4">{bug.description}</p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(bug.status)}`}>
-                        {bug.status.replace('-', ' ').toUpperCase()}
-                      </span>
-                      <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getPriorityColor(bug.priority)}`}>
-                        {bug.priority.toUpperCase()}
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-gray-600 text-white text-xs font-medium">
-                        {bug.projectName}
-                      </span>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-text-muted">Reported by:</span>
-                        <div className="text-text-primary font-medium">{bug.reportedByName}</div>
-                      </div>
-                      <div>
-                        <span className="text-text-muted">Created:</span>
-                        <div className="text-text-primary">{new Date(bug.createdAt).toLocaleDateString()}</div>
-                      </div>
-                      <div>
-                        <span className="text-text-muted">Last Updated:</span>
-                        <div className="text-text-primary">{new Date(bug.updatedAt).toLocaleDateString()}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="ml-6 flex flex-col gap-2">
-                    <button
-                      onClick={() => handleViewBug(bug)}
-                      className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105"
-                    >
-                      View Details
-                    </button>
-                    
-                    {bug.status !== 'closed' && (
-                      <button
-                        onClick={() => handleViewBug(bug)}
-                        className="bg-accent-red hover:bg-accent-coral px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105"
-                      >
-                        Update Status
-                      </button>
-                    )}
-                  </div>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="text-text-muted text-lg">Loading assigned bugs...</div>
+              </div>
+            ) : filteredBugs.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-text-muted text-lg">
+                  {bugs.length === 0 ? 'No bugs assigned to you yet.' : 'No bugs found matching your filters'}
                 </div>
               </div>
-            ))}
+            ) : (
+              filteredBugs.map((bug) => (
+                <div key={bug._id} className={`bg-card-bg p-6 rounded-xl border-l-4 ${getPriorityBorderColor(bug.priority)} border-r border-t border-b border-gray-700 hover:scale-105 transition-all duration-300`}>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-lg font-bold text-text-primary">{bug.title}</h3>
+                        <span className="text-text-muted text-sm">#{bug._id.slice(-6)}</span>
+                      </div>
+                      
+                      <p className="text-text-muted text-sm mb-4">{bug.description}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(bug.status)}`}>
+                          {bug.status.replace('-', ' ').toUpperCase()}
+                        </span>
+                        <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getPriorityColor(bug.priority)}`}>
+                          {bug.priority.toUpperCase()}
+                        </span>
+                        <span className="px-3 py-1 rounded-full bg-gray-600 text-white text-xs font-medium">
+                          {bug.project?.name || 'Unknown Project'}
+                        </span>
+                      </div>
 
-            {filteredBugs.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-text-muted text-lg">No bugs found matching your filters</div>
-              </div>
+                      <div className="grid md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-text-muted">Reported by:</span>
+                          <div className="text-text-primary font-medium">
+                            {bug.reporter?.user ? `${bug.reporter.user.firstName} ${bug.reporter.user.lastName}` : bug.reporter?.name || 'Unknown'}
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-text-muted">Created:</span>
+                          <div className="text-text-primary">{new Date(bug.createdAt).toLocaleDateString()}</div>
+                        </div>
+                        <div>
+                          <span className="text-text-muted">Last Updated:</span>
+                          <div className="text-text-primary">{new Date(bug.updatedAt).toLocaleDateString()}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="ml-6 flex flex-col gap-2">
+                      <button
+                        onClick={() => handleViewBug(bug)}
+                        className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105"
+                      >
+                        View Details
+                      </button>
+                      
+                      {bug.status !== 'closed' && (
+                        <button
+                          onClick={() => handleViewBug(bug)}
+                          className="bg-accent-red hover:bg-accent-coral px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 hover:scale-105"
+                        >
+                          Update Status
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
             )}
           </div>
 

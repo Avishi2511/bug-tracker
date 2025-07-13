@@ -38,21 +38,30 @@ const MyBugsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch bugs reported by current user
-        const bugsResponse = await api.getBugs({ reportedBy: user?.id });
+        // Fetch bugs reported by current user (no need to pass reportedBy as backend filters by role)
+        const bugsResponse = await api.getBugs();
         
         // Fetch all projects for filter dropdown
         const projectsResponse = await api.getProjects();
         
+        console.log('Bugs API response:', bugsResponse.data); // Debug log
+        console.log('Projects API response:', projectsResponse.data); // Debug log
+        
         if (bugsResponse.data.success) {
-          setBugs(bugsResponse.data.data);
+          // Bugs are nested in response.data.data.bugs
+          const bugsData = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          setBugs(Array.isArray(bugsData) ? bugsData : []);
         }
         
         if (projectsResponse.data.success) {
-          setProjects(projectsResponse.data.data);
+          // Projects are nested in response.data.data.projects
+          const projectsData = projectsResponse.data.data.projects || projectsResponse.data.data || [];
+          setProjects(Array.isArray(projectsData) ? projectsData : []);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+        setBugs([]);
+        setProjects([]);
       } finally {
         setLoading(false);
       }
@@ -265,7 +274,9 @@ const MyBugsPage = () => {
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-text-muted">Assigned to:</span>
-                        <div className="text-text-primary font-medium">{bug.assignedToName}</div>
+                        <div className="text-text-primary font-medium">
+                          {bug.assignedTo ? `${bug.assignedTo.firstName} ${bug.assignedTo.lastName}` : 'Unassigned'}
+                        </div>
                       </div>
                       <div>
                         <span className="text-text-muted">Created:</span>
@@ -353,7 +364,9 @@ const MyBugsPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Assigned To</label>
-                  <p className="text-text-muted">{selectedBug.assignedToName}</p>
+                  <p className="text-text-muted">
+                    {selectedBug.assignedTo ? `${selectedBug.assignedTo.firstName} ${selectedBug.assignedTo.lastName}` : 'Unassigned'}
+                  </p>
                 </div>
               </div>
 

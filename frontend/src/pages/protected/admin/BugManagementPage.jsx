@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { mockBugs, filterBugs } from '../../../data/mockBugs';
-import { mockProjects } from '../../../data/mockProjects';
-import { mockUsers } from '../../../data/mockUsers';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const BugManagementPage = () => {
+  const { user } = useAuth();
   const [bugs, setBugs] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [developers, setDevelopers] = useState([]);
   const [filteredBugs, setFilteredBugs] = useState([]);
   const [filters, setFilters] = useState({
     status: 'all',
@@ -16,10 +18,55 @@ const BugManagementPage = () => {
   });
   const [selectedBug, setSelectedBug] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [assigningBug, setAssigningBug] = useState(null);
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty arrays
+    const fetchData = async () => {
+      try {
+        // Fetch bugs, projects, and users in parallel
+        const [bugsResponse, projectsResponse, usersResponse] = await Promise.all([
+          api.getBugs(),
+          api.getProjects(),
+          api.getUsers()
+        ]);
+
+        console.log('Bug Management API responses:', {
+          bugs: bugsResponse.data,
+          projects: projectsResponse.data,
+          users: usersResponse.data
+        });
+
+        // Process bugs data
+        if (bugsResponse.data.success) {
+          const bugsData = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          setBugs(Array.isArray(bugsData) ? bugsData : []);
+        }
+
+        // Process projects data
+        if (projectsResponse.data.success) {
+          const projectsData = projectsResponse.data.data.projects || projectsResponse.data.data || [];
+          setProjects(Array.isArray(projectsData) ? projectsData : []);
+        }
+
+        // Process users data and filter for developers
+        if (usersResponse.data.success) {
+          const usersData = usersResponse.data.data || [];
+          const developersData = Array.isArray(usersData) ? usersData.filter(user => user.role === 'developer') : [];
+          setDevelopers(developersData);
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setBugs([]);
+        setProjects([]);
+        setDevelopers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -88,7 +135,28 @@ const BugManagementPage = () => {
 
   const handleDeleteBug = (bugId) => {
     if (window.confirm('Are you sure you want to delete this bug?')) {
-      setBugs(prev => prev.filter(bug => bug.id !== bugId));
+      setBugs(prev => prev.filter(bug => bug._id !== bugId));
+    }
+  };
+
+  const handleAssignBug = async (bugId, developerId) => {
+    setAssigningBug(bugId);
+    try {
+      const response = await api.assignBug(bugId, developerId);
+      
+      if (response.data.success) {
+        // Update the bug in the local state
+        setBugs(prev => prev.map(bug => 
+          bug._id === bugId 
+            ? { ...bug, assignedTo: response.data.data.bug.assignedTo }
+            : bug
+        ));
+      }
+    } catch (error) {
+      console.error('Error assigning bug:', error);
+      alert('Failed to assign bug. Please try again.');
+    } finally {
+      setAssigningBug(null);
     }
   };
 
@@ -183,7 +251,7 @@ const BugManagementPage = () => {
                   className="w-full px-3 py-2 bg-dark-bg border border-gray-600 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red"
                 >
                   <option value="all">All Projects</option>
-                  {mockProjects.map(project => (
+                  {projects.map(project => (
                     <option key={project._id} value={project._id}>{project.name}</option>
                   ))}
                 </select>
@@ -218,43 +286,76 @@ const BugManagementPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
-                  {filteredBugs.map((bug) => (
-                    <tr key={bug.id} className="hover:bg-gray-800 transition-colors">
-                      <td className="px-6 py-4 text-sm text-text-primary">#{bug._id.slice(-6)}</td>
-                      <td className="px-6 py-4 text-sm text-text-primary font-medium">{bug.title}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(bug.status)}`}>
-                          {bug.status.replace('-', ' ').toUpperCase()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getPriorityColor(bug.priority)}`}>
-                          {bug.priority.toUpperCase()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{bug.assignedToName}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(bug.createdAt).toLocaleDateString()}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleViewBug(bug)}
-                            className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors"
-                          >
-                            View
-                          </button>
-                          <button className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white text-xs transition-colors">
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteBug(bug.id)}
-                            className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-xs transition-colors"
-                          >
-                            Delete
-                          </button>
-                        </div>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-text-muted">
+                        Loading bugs...
                       </td>
                     </tr>
-                  ))}
+                  ) : filteredBugs.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-text-muted">
+                        No bugs found. {bugs.length === 0 ? 'No bugs have been reported yet.' : 'Try adjusting your filters.'}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredBugs.map((bug) => (
+                      <tr key={bug._id} className="hover:bg-gray-800 transition-colors">
+                        <td className="px-6 py-4 text-sm text-text-primary">#{bug._id.slice(-6)}</td>
+                        <td className="px-6 py-4 text-sm text-text-primary font-medium">{bug.title}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(bug.status)}`}>
+                            {bug.status.replace('-', ' ').toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getPriorityColor(bug.priority)}`}>
+                            {bug.priority.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-text-muted">
+                          {bug.assignedTo ? `${bug.assignedTo.firstName} ${bug.assignedTo.lastName}` : 'Unassigned'}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-text-muted">{new Date(bug.createdAt).toLocaleDateString()}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleViewBug(bug)}
+                              className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors"
+                            >
+                              View
+                            </button>
+                            <div className="relative">
+                              <select
+                                value={bug.assignedTo?._id || ''}
+                                onChange={(e) => handleAssignBug(bug._id, e.target.value)}
+                                disabled={assigningBug === bug._id}
+                                className="bg-green-600 hover:bg-green-700 disabled:opacity-50 px-3 py-1 rounded text-white text-xs transition-colors appearance-none pr-6 min-w-[80px]"
+                              >
+                                <option value="">Assign...</option>
+                                {developers.map(developer => (
+                                  <option key={developer._id} value={developer._id}>
+                                    {developer.firstName} {developer.lastName}
+                                  </option>
+                                ))}
+                              </select>
+                              {assigningBug === bug._id && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => handleDeleteBug(bug._id)}
+                              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-xs transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

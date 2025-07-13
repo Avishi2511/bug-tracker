@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { getDeveloperDashboardStats } from '../../../data/mockStats';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const DeveloperDashboard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [loading, setLoading] = useState(true);
   
   const handleNavigation = (tab) => {
     switch (tab) {
@@ -35,8 +38,58 @@ const DeveloperDashboard = () => {
   });
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty stats
+    const fetchDeveloperData = async () => {
+      try {
+        // Fetch bugs assigned to current developer (backend filters by role automatically)
+        const bugsResponse = await api.getBugs();
+        
+        console.log('Developer Dashboard bugs API response:', bugsResponse.data);
+        
+        if (bugsResponse.data.success) {
+          // Bugs are nested in response.data.data.bugs
+          const assignedBugs = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          const bugsArray = Array.isArray(assignedBugs) ? assignedBugs : [];
+          
+          // Calculate statistics
+          const assignedBugsCount = bugsArray.length;
+          
+          // Priority breakdown
+          const priorityBreakdown = {
+            critical: bugsArray.filter(bug => bug.priority === 'critical').length,
+            high: bugsArray.filter(bug => bug.priority === 'high').length,
+            medium: bugsArray.filter(bug => bug.priority === 'medium').length,
+            low: bugsArray.filter(bug => bug.priority === 'low').length
+          };
+          
+          // Current work (recent assigned bugs, max 5)
+          const currentWork = bugsArray
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 5)
+            .map(bug => ({
+              id: bug._id,
+              title: bug.title,
+              bugId: `#${bug._id.slice(-6)}`,
+              assignedAt: new Date(bug.createdAt).toLocaleDateString(),
+              priority: bug.priority,
+              status: bug.status
+            }));
+          
+          setStats({
+            assignedBugs: assignedBugsCount,
+            priorityBreakdown,
+            currentWork
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching developer data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchDeveloperData();
+    }
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');
@@ -45,7 +98,7 @@ const DeveloperDashboard = () => {
         el.classList.add('visible');
       }, index * 100);
     });
-  }, []);
+  }, [user]);
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', active: true },

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { getAdminDashboardStats } from '../../../data/mockStats';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -13,8 +14,72 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty stats
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch all data in parallel
+        const [bugsResponse, usersResponse, projectsResponse] = await Promise.all([
+          api.getBugs(),
+          api.getUsers(),
+          api.getProjects()
+        ]);
+
+        console.log('Admin Dashboard API responses:', {
+          bugs: bugsResponse.data,
+          users: usersResponse.data,
+          projects: projectsResponse.data
+        });
+
+        let totalBugs = 0;
+        let activeUsers = 0;
+        let activeProjects = 0;
+        let recentActivity = [];
+
+        // Process bugs data
+        if (bugsResponse.data.success) {
+          const bugs = bugsResponse.data.data.bugs || bugsResponse.data.data || [];
+          totalBugs = Array.isArray(bugs) ? bugs.length : 0;
+          
+          // Create recent activity from recent bugs
+          if (Array.isArray(bugs)) {
+            const recentBugs = bugs
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .slice(0, 3)
+              .map((bug, index) => ({
+                id: `bug-${index}`,
+                message: `New bug reported: ${bug.title}`,
+                timestamp: new Date(bug.createdAt).toLocaleString(),
+                type: 'bug',
+                priority: bug.priority
+              }));
+            recentActivity = [...recentActivity, ...recentBugs];
+          }
+        }
+
+        // Process users data
+        if (usersResponse.data.success) {
+          const users = usersResponse.data.data || [];
+          activeUsers = Array.isArray(users) ? users.filter(user => user.isActive).length : 0;
+        }
+
+        // Process projects data
+        if (projectsResponse.data.success) {
+          const projects = projectsResponse.data.data.projects || projectsResponse.data.data || [];
+          activeProjects = Array.isArray(projects) ? projects.filter(project => project.status === 'active').length : 0;
+        }
+
+        setStats({
+          totalBugs,
+          activeUsers,
+          activeProjects,
+          recentActivity: recentActivity.slice(0, 5) // Limit to 5 recent activities
+        });
+
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    fetchDashboardData();
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');

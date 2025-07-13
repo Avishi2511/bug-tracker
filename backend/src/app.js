@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const bugRoutes = require('./routes/bugs');
 const projectRoutes = require('./routes/projects');
 const publicRoutes = require('./routes/public');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 // General rate limiting
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // Much higher limit in development
   message: {
     success: false,
     message: 'Too many requests, please try again later.'
@@ -53,6 +54,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/bugs', bugRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/users', userRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

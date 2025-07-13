@@ -9,7 +9,7 @@ const router = express.Router();
 // Rate limiting for auth routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'development' ? 100 : 5, // More permissive in development
+  max: process.env.NODE_ENV === 'development' ? 1000 : 5, // Much higher limit in development
   message: {
     success: false,
     message: 'Too many authentication attempts, please try again later.'

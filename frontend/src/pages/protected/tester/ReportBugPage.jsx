@@ -39,25 +39,34 @@ const ReportBugPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await api.getProjects();
-        if (response.data.success) {
-          // Filter for active projects only
-          const activeProjects = response.data.data.filter(p => p.status === 'active');
-          setProjects(activeProjects);
-        }
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-        setProjects([]);
-      } finally {
-        setLoadingProjects(false);
+  const fetchProjects = async () => {
+    setLoadingProjects(true);
+    try {
+      const response = await api.getProjects();
+      console.log('Projects API response:', response.data); // Debug log
+      
+      if (response.data.success) {
+        // The projects are nested in response.data.data.projects
+        const allProjects = response.data.data.projects || response.data.data || [];
+        // Filter for active projects only
+        const activeProjects = allProjects.filter(p => p.status === 'active');
+        setProjects(activeProjects);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      setProjects([]);
+    } finally {
+      setLoadingProjects(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
   }, []);
+
+  const handleRefreshProjects = () => {
+    fetchProjects();
+  };
 
   const priorities = [
     { value: 'low', label: 'Low', color: 'bg-blue-600' },
@@ -214,19 +223,44 @@ const ReportBugPage = () => {
                   {/* Project and Title Row */}
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="project" className="block text-sm font-medium text-text-primary mb-2">
-                        Project <span className="text-accent-red">*</span>
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label htmlFor="project" className="block text-sm font-medium text-text-primary">
+                          Project <span className="text-accent-red">*</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={handleRefreshProjects}
+                          disabled={loadingProjects}
+                          className="text-xs text-blue-400 hover:text-blue-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                        >
+                          {loadingProjects ? (
+                            <>
+                              <div className="w-3 h-3 border border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                              Refreshing...
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                              </svg>
+                              Refresh Projects
+                            </>
+                          )}
+                        </button>
+                      </div>
                       <select
                         id="project"
                         name="project"
                         value={formData.project}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 bg-dark-bg border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red focus:border-transparent transition-all ${
+                        disabled={loadingProjects}
+                        className={`w-full px-4 py-3 bg-dark-bg border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                           errors.project ? 'border-accent-red' : 'border-gray-600'
                         }`}
                       >
-                        <option value="">Select a project...</option>
+                        <option value="">
+                          {loadingProjects ? 'Loading projects...' : 'Select a project...'}
+                        </option>
                         {projects.map(project => (
                           <option key={project._id} value={project._id}>
                             {project.name}
@@ -235,6 +269,11 @@ const ReportBugPage = () => {
                       </select>
                       {errors.project && (
                         <p className="mt-1 text-sm text-accent-red">{errors.project}</p>
+                      )}
+                      {projects.length === 0 && !loadingProjects && (
+                        <p className="mt-1 text-sm text-yellow-500">
+                          No active projects found. Contact an admin to create projects.
+                        </p>
                       )}
                     </div>
 

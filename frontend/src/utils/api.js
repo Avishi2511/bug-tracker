@@ -51,6 +51,8 @@ export const getBug = (id) => api.get(`/bugs/${id}`);
 export const createBug = (bugData) => api.post('/bugs', bugData);
 export const updateBug = (id, bugData) => api.put(`/bugs/${id}`, bugData);
 export const deleteBug = (id) => api.delete(`/bugs/${id}`);
+export const assignBug = (bugId, developerId) => api.put(`/bugs/${bugId}/assign`, { assignedTo: developerId });
+export const updateBugStatus = (bugId, status, progressNote) => api.put(`/bugs/${bugId}/status`, { status, progressNote });
 
 // Statistics
 export const getDashboardStats = (role) => api.get(`/stats/dashboard?role=${role}`);
