@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as api from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -14,73 +15,69 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock user data for development
-  const mockUsers = {
-    'admin@xyz.com': { 
-      id: 1, 
-      email: 'admin@xyz.com', 
-      fullName: 'Admin User', 
-      role: 'admin' 
-    },
-    'dev@xyz.com': { 
-      id: 2, 
-      email: 'dev@xyz.com', 
-      fullName: 'Developer User', 
-      role: 'developer' 
-    },
-    'tester@xyz.com': { 
-      id: 3, 
-      email: 'tester@xyz.com', 
-      fullName: 'Tester User', 
-      role: 'tester' 
+  useEffect(() => {
+    // Check for stored token and validate with backend
+    const token = localStorage.getItem('token');
+    if (token) {
+      validateToken();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const validateToken = async () => {
+    try {
+      const response = await api.getCurrentUser();
+      if (response.data.success) {
+        setUser(response.data.data.user);
+      }
+    } catch (error) {
+      // Token is invalid, remove it
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const login = async (username, password) => {
+    try {
+      const response = await api.login({ username, password });
+      
+      if (response.data.success) {
+        const { token, user: userData } = response.data.data;
+        
+        // Store token and user data
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        setUser(userData);
+        return userData;
+      } else {
+        throw new Error(response.data.message || 'Login failed');
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
-    setLoading(false);
-  }, []);
-
-  const login = async (email, password) => {
-    // Mock authentication - replace with real API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const mockUser = mockUsers[email];
-        if (mockUser && password === 'password') {
-          setUser(mockUser);
-          localStorage.setItem('user', JSON.stringify(mockUser));
-          resolve(mockUser);
-        } else {
-          reject(new Error('Invalid email or password'));
-        }
-      }, 1000);
-    });
   };
 
   const register = async (userData) => {
-    // Mock registration - replace with real API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (mockUsers[userData.email]) {
-          reject(new Error('User already exists'));
-        } else {
-          const newUser = {
-            id: Date.now(),
-            ...userData
-          };
-          // In real app, this would be saved to backend
-          resolve(newUser);
-        }
-      }, 1000);
-    });
+    try {
+      const response = await api.register(userData);
+      
+      if (response.data.success) {
+        return response.data.data.user;
+      } else {
+        throw new Error(response.data.message || 'Registration failed');
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Registration failed');
+    }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
   };
 

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { getTesterDashboardStats } from '../../../data/mockStats';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const TesterDashboard = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({
     bugsReported: 0,
@@ -14,10 +16,54 @@ const TesterDashboard = () => {
     },
     recentReports: []
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty stats
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch bugs reported by current user
+        const bugsResponse = await api.getBugs({ reportedBy: user?.id });
+        
+        if (bugsResponse.data.success) {
+          const userBugs = bugsResponse.data.data;
+          
+          // Calculate statistics
+          const bugsReported = userBugs.length;
+          const statusBreakdown = {
+            open: userBugs.filter(bug => bug.status === 'open').length,
+            inProgress: userBugs.filter(bug => bug.status === 'in-progress').length,
+            closed: userBugs.filter(bug => bug.status === 'closed').length
+          };
+          
+          // Get recent reports (last 5)
+          const recentReports = userBugs
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 5)
+            .map(bug => ({
+              id: bug._id,
+              title: bug.title,
+              bugId: `#${bug._id.slice(-6)}`,
+              reportedAt: new Date(bug.createdAt).toLocaleDateString(),
+              status: bug.status,
+              priority: bug.priority
+            }));
+          
+          setStats({
+            bugsReported,
+            statusBreakdown,
+            recentReports
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchDashboardData();
+    }
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');
@@ -26,7 +72,7 @@ const TesterDashboard = () => {
         el.classList.add('visible');
       }, index * 100);
     });
-  }, []);
+  }, [user]);
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', active: true },

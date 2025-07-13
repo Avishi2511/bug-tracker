@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { mockProjects } from '../../../data/mockProjects';
+import * as api from '../../../utils/api';
 
 const ReportBugPage = () => {
   const navigate = useNavigate();
@@ -20,6 +20,8 @@ const ReportBugPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [bugId, setBugId] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
   const handleNavigation = (tab) => {
     switch (tab) {
@@ -37,7 +39,25 @@ const ReportBugPage = () => {
     }
   };
 
-  const projects = mockProjects.filter(p => p.status === 'active');
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.getProjects();
+        if (response.data.success) {
+          // Filter for active projects only
+          const activeProjects = response.data.data.filter(p => p.status === 'active');
+          setProjects(activeProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjects([]);
+      } finally {
+        setLoadingProjects(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const priorities = [
     { value: 'low', label: 'Low', color: 'bg-blue-600' },
@@ -102,14 +122,28 @@ const ReportBugPage = () => {
     
     setIsLoading(true);
     try {
-      // Mock API call - replace with real API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const bugData = {
+        title: formData.title,
+        description: formData.description,
+        stepsToReproduce: formData.stepsToReproduce,
+        expectedBehavior: formData.expectedBehavior,
+        actualBehavior: formData.actualBehavior,
+        priority: formData.priority,
+        project: formData.project,
+        environment: formData.environment,
+        browserVersion: formData.browserVersion
+      };
+
+      const response = await api.createBug(bugData);
       
-      const generatedBugId = `BUG-${Math.floor(Math.random() * 90000) + 10000}`;
-      setBugId(generatedBugId);
-      setIsSubmitted(true);
+      if (response.data.success) {
+        setBugId(response.data.data.bug._id || response.data.data.bug.id);
+        setIsSubmitted(true);
+      } else {
+        setErrors({ submit: response.data.message || 'Failed to submit bug report. Please try again.' });
+      }
     } catch (error) {
-      setErrors({ submit: 'Failed to submit bug report. Please try again.' });
+      setErrors({ submit: error.response?.data?.message || 'Failed to submit bug report. Please try again.' });
     } finally {
       setIsLoading(false);
     }

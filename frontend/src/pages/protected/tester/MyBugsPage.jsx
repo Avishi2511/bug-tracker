@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
-import { mockProjects } from '../../../data/mockProjects';
+import * as api from '../../../utils/api';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const MyBugsPage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [bugs, setBugs] = useState([]);
   const [filteredBugs, setFilteredBugs] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [filters, setFilters] = useState({
     status: 'all',
     priority: 'all',
@@ -14,6 +17,7 @@ const MyBugsPage = () => {
   });
   const [selectedBug, setSelectedBug] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleNavigation = (tab) => {
     switch (tab) {
@@ -32,8 +36,31 @@ const MyBugsPage = () => {
   };
 
   useEffect(() => {
-    // Data fetching logic will go here
-    // For now, we'll just initialize with empty arrays
+    const fetchData = async () => {
+      try {
+        // Fetch bugs reported by current user
+        const bugsResponse = await api.getBugs({ reportedBy: user?.id });
+        
+        // Fetch all projects for filter dropdown
+        const projectsResponse = await api.getProjects();
+        
+        if (bugsResponse.data.success) {
+          setBugs(bugsResponse.data.data);
+        }
+        
+        if (projectsResponse.data.success) {
+          setProjects(projectsResponse.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchData();
+    }
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -42,7 +69,7 @@ const MyBugsPage = () => {
         el.classList.add('visible');
       }, index * 100);
     });
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let filtered = bugs;
@@ -206,7 +233,7 @@ const MyBugsPage = () => {
                   className="w-full px-3 py-2 bg-dark-bg border border-gray-600 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red"
                 >
                   <option value="all">All Projects</option>
-                  {mockProjects.map(project => (
+                  {projects.map(project => (
                     <option key={project._id} value={project._id}>{project.name}</option>
                   ))}
                 </select>

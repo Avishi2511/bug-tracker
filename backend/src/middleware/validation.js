@@ -36,8 +36,8 @@ const validateUserRegistration = [
     .isLength({ max: 50 })
     .withMessage('Last name cannot exceed 50 characters'),
   body('role')
-    .isIn(['tester', 'developer'])
-    .withMessage('Role must be either tester or developer'),
+    .isIn(['tester', 'developer', 'admin'])
+    .withMessage('Role must be tester, developer, or admin'),
   validateRequest
 ];
 
