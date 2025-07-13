@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { getBugsByAssignee } from '../../../data/mockBugs';
+import { mockProjects } from '../../../data/mockProjects';
 
 const WorkHistoryPage = () => {
   const navigate = useNavigate();
@@ -28,71 +30,9 @@ const WorkHistoryPage = () => {
     }
   };
 
-  // Mock data for work history
-  const mockWorkHistory = [
-    {
-      id: 1,
-      title: 'User profile update bug',
-      description: 'Fixed issue where user profile changes were not being saved',
-      status: 'closed',
-      priority: 'medium',
-      project: 'Web Application',
-      completedAt: '2024-01-15',
-      timeSpent: '4 hours',
-      resolution: 'Fixed database transaction issue in user update endpoint'
-    },
-    {
-      id: 2,
-      title: 'Email notification system failure',
-      description: 'Resolved email service integration problems',
-      status: 'closed',
-      priority: 'high',
-      project: 'Web Application',
-      completedAt: '2024-01-12',
-      timeSpent: '6 hours',
-      resolution: 'Updated email service configuration and added retry logic'
-    },
-    {
-      id: 3,
-      title: 'Mobile responsive layout issues',
-      description: 'Fixed various layout problems on mobile devices',
-      status: 'closed',
-      priority: 'medium',
-      project: 'Web Application',
-      completedAt: '2024-01-08',
-      timeSpent: '8 hours',
-      resolution: 'Implemented responsive CSS fixes and updated media queries'
-    },
-    {
-      id: 4,
-      title: 'API rate limiting implementation',
-      description: 'Added rate limiting to prevent API abuse',
-      status: 'closed',
-      priority: 'high',
-      project: 'API Service',
-      completedAt: '2024-01-05',
-      timeSpent: '12 hours',
-      resolution: 'Implemented Redis-based rate limiting with configurable thresholds'
-    },
-    {
-      id: 5,
-      title: 'Search functionality optimization',
-      description: 'Improved search performance and accuracy',
-      status: 'closed',
-      priority: 'medium',
-      project: 'Web Application',
-      completedAt: '2024-01-02',
-      timeSpent: '10 hours',
-      resolution: 'Optimized database queries and added search indexing'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setWorkHistory(mockWorkHistory);
-      setFilteredHistory(mockWorkHistory);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -293,7 +233,7 @@ const WorkHistoryPage = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-lg font-bold text-text-primary">{item.title}</h3>
-                      <span className="text-text-muted text-sm">#{item.id}</span>
+                      <span className="text-text-muted text-sm">#{item._id.slice(-6)}</span>
                     </div>
                     
                     <p className="text-text-muted text-sm mb-3">{item.description}</p>
@@ -306,7 +246,7 @@ const WorkHistoryPage = () => {
                         {item.priority.toUpperCase()}
                       </span>
                       <span className="px-3 py-1 rounded-full bg-gray-600 text-white text-xs font-medium">
-                        {item.project}
+                        {item.projectName}
                       </span>
                     </div>
 
@@ -318,7 +258,7 @@ const WorkHistoryPage = () => {
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-text-muted">Completed:</span>
-                        <div className="text-text-primary font-medium">{item.completedAt}</div>
+                        <div className="text-text-primary font-medium">{new Date(item.updatedAt).toLocaleDateString()}</div>
                       </div>
                       <div>
                         <span className="text-text-muted">Time Spent:</span>
@@ -326,7 +266,7 @@ const WorkHistoryPage = () => {
                       </div>
                       <div>
                         <span className="text-text-muted">Project:</span>
-                        <div className="text-text-primary font-medium">{item.project}</div>
+                        <div className="text-text-primary font-medium">{item.projectName}</div>
                       </div>
                     </div>
                   </div>

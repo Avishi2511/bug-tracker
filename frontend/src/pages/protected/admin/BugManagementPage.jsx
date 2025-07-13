@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { mockBugs, filterBugs } from '../../../data/mockBugs';
+import { mockProjects } from '../../../data/mockProjects';
+import { mockUsers } from '../../../data/mockUsers';
 
 const BugManagementPage = () => {
   const [bugs, setBugs] = useState([]);
@@ -14,52 +17,9 @@ const BugManagementPage = () => {
   const [selectedBug, setSelectedBug] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Mock data
-  const mockBugs = [
-    {
-      id: 1,
-      title: 'Login authentication failure',
-      description: 'Users cannot log in with valid credentials',
-      status: 'open',
-      priority: 'critical',
-      project: 'Web Application',
-      assignedTo: 'John Developer',
-      reportedBy: 'Jane Tester',
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-15'
-    },
-    {
-      id: 2,
-      title: 'Dashboard loading performance issue',
-      description: 'Dashboard takes too long to load user data',
-      status: 'in-progress',
-      priority: 'high',
-      project: 'Web Application',
-      assignedTo: 'Mike Developer',
-      reportedBy: 'Sarah Tester',
-      createdAt: '2024-01-14',
-      updatedAt: '2024-01-16'
-    },
-    {
-      id: 3,
-      title: 'Minor UI alignment issue in sidebar',
-      description: 'Sidebar menu items are slightly misaligned',
-      status: 'closed',
-      priority: 'low',
-      project: 'Web Application',
-      assignedTo: 'John Developer',
-      reportedBy: 'Public User',
-      createdAt: '2024-01-10',
-      updatedAt: '2024-01-12'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setBugs(mockBugs);
-      setFilteredBugs(mockBugs);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -223,9 +183,9 @@ const BugManagementPage = () => {
                   className="w-full px-3 py-2 bg-dark-bg border border-gray-600 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red"
                 >
                   <option value="all">All Projects</option>
-                  <option value="Web Application">Web Application</option>
-                  <option value="Mobile App">Mobile App</option>
-                  <option value="API Service">API Service</option>
+                  {mockProjects.map(project => (
+                    <option key={project._id} value={project._id}>{project.name}</option>
+                  ))}
                 </select>
               </div>
 
@@ -260,7 +220,7 @@ const BugManagementPage = () => {
                 <tbody className="divide-y divide-gray-700">
                   {filteredBugs.map((bug) => (
                     <tr key={bug.id} className="hover:bg-gray-800 transition-colors">
-                      <td className="px-6 py-4 text-sm text-text-primary">#{bug.id}</td>
+                      <td className="px-6 py-4 text-sm text-text-primary">#{bug._id.slice(-6)}</td>
                       <td className="px-6 py-4 text-sm text-text-primary font-medium">{bug.title}</td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getStatusColor(bug.status)}`}>
@@ -272,8 +232,8 @@ const BugManagementPage = () => {
                           {bug.priority.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{bug.assignedTo}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{bug.createdAt}</td>
+                      <td className="px-6 py-4 text-sm text-text-muted">{bug.assignedToName}</td>
+                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(bug.createdAt).toLocaleDateString()}</td>
                       <td className="px-6 py-4">
                         <div className="flex space-x-2">
                           <button
@@ -351,24 +311,24 @@ const BugManagementPage = () => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Assigned To</label>
-                  <p className="text-text-muted">{selectedBug.assignedTo}</p>
+                  <p className="text-text-muted">{selectedBug.assignedToName}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Reported By</label>
-                  <p className="text-text-muted">{selectedBug.reportedBy}</p>
+                  <p className="text-text-muted">{selectedBug.reportedByName}</p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Created</label>
-                  <p className="text-text-muted">{selectedBug.createdAt}</p>
+                  <p className="text-text-muted">{new Date(selectedBug.createdAt).toLocaleString()}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Last Updated</label>
-                  <p className="text-text-muted">{selectedBug.updatedAt}</p>
+                  <p className="text-text-muted">{new Date(selectedBug.updatedAt).toLocaleString()}</p>
                 </div>
               </div>
             </div>

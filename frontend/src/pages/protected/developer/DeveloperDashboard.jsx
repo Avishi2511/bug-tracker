@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { getDeveloperDashboardStats } from '../../../data/mockStats';
 
 const DeveloperDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [stats, setStats] = useState({
-    assignedBugs: 0,
-    priorityBreakdown: {
-      critical: 0,
-      high: 0,
-      medium: 0,
-      low: 0
-    }
-  });
-
+  
   const handleNavigation = (tab) => {
     switch (tab) {
       case 'dashboard':
@@ -31,19 +23,20 @@ const DeveloperDashboard = () => {
     }
   };
 
+  const [stats, setStats] = useState({
+    assignedBugs: 0,
+    priorityBreakdown: {
+      critical: 0,
+      high: 0,
+      medium: 0,
+      low: 0
+    },
+    currentWork: []
+  });
+
   useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      setStats({
-        assignedBugs: 12,
-        priorityBreakdown: {
-          critical: 2,
-          high: 4,
-          medium: 5,
-          low: 1
-        }
-      });
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty stats
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');
@@ -178,53 +171,25 @@ const DeveloperDashboard = () => {
 
               {/* Bug List */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg border-l-4 border-red-500">
-                  <div>
-                    <div className="text-text-primary font-medium">Login authentication failure</div>
-                    <div className="text-text-muted text-sm">Bug #001 • Assigned 2 hours ago</div>
+                {stats.currentWork.map(bug => (
+                  <div key={bug.id} className={`flex items-center justify-between p-4 bg-dark-bg rounded-lg border-l-4 border-${bug.priority === 'critical' ? 'red' : bug.priority === 'high' ? 'orange' : 'yellow'}-500`}>
+                    <div>
+                      <div className="text-text-primary font-medium">{bug.title}</div>
+                      <div className="text-text-muted text-sm">{bug.bugId} • Assigned {bug.assignedAt}</div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-3 py-1 bg-${bug.priority === 'critical' ? 'red' : bug.priority === 'high' ? 'orange' : 'yellow'}-600 text-white text-sm rounded-full`}>
+                        {bug.priority.charAt(0).toUpperCase() + bug.priority.slice(1)}
+                      </span>
+                      <button 
+                        onClick={() => handleNavigation('assigned')}
+                        className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
+                      >
+                        View
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-red-600 text-white text-sm rounded-full">Critical</span>
-                    <button 
-                      onClick={() => handleNavigation('assigned')}
-                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg border-l-4 border-orange-500">
-                  <div>
-                    <div className="text-text-primary font-medium">Dashboard loading performance issue</div>
-                    <div className="text-text-muted text-sm">Bug #002 • Assigned 1 day ago</div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-orange-600 text-white text-sm rounded-full">High</span>
-                    <button 
-                      onClick={() => handleNavigation('assigned')}
-                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg border-l-4 border-yellow-500">
-                  <div>
-                    <div className="text-text-primary font-medium">Minor UI alignment issue in sidebar</div>
-                    <div className="text-text-muted text-sm">Bug #003 • Assigned 3 days ago</div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-yellow-600 text-white text-sm rounded-full">Medium</span>
-                    <button 
-                      onClick={() => handleNavigation('assigned')}
-                      className="px-3 py-1 bg-accent-red hover:bg-accent-coral text-white text-sm rounded-lg transition-colors"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

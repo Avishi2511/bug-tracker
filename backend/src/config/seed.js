@@ -1,56 +1,55 @@
 const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const User = require('../models/User');
+const Bug = require('../models/Bug');
+const { mockUsers } = require('../data/mockUsers');
+const { mockProjects } = require('../data/mockProjects');
+const { mockBugs } = require('../data/mockBugs');
 
-const seedProjects = async () => {
+const seedDatabase = async () => {
   try {
-    // Find admin user
-    const admin = await User.findOne({ role: 'admin' });
+    // Clear existing data
+    await Bug.deleteMany({});
+    await Project.deleteMany({});
+    await User.deleteMany({});
+
+    // Seed users
+    const users = await User.insertMany(mockUsers);
+    console.log('✅ Users seeded successfully');
+
+    // Get admin user for project creation
+    const admin = users.find(user => user.role === 'admin');
     if (!admin) {
-      console.log('No admin user found. Please run the server first to create initial admin.');
+      console.log('No admin user found in mock data.');
       return;
     }
 
-    // Check if projects already exist
-    const existingProjects = await Project.countDocuments();
-    if (existingProjects > 0) {
-      console.log('Projects already exist. Skipping seed.');
-      return;
-    }
+    // Seed projects
+    const projectsToSeed = mockProjects.map(project => ({
+      ...project,
+      createdBy: admin._id
+    }));
+    const projects = await Project.insertMany(projectsToSeed);
+    console.log('✅ Projects seeded successfully');
 
-    // Create initial projects
-    const projects = [
-      {
-        name: 'Bug Tracker Web App',
-        description: 'Main bug tracking web application for XYZ Corp',
-        status: 'active',
-        createdBy: admin._id
-      },
-      {
-        name: 'Mobile App',
-        description: 'XYZ Corp mobile application for iOS and Android',
-        status: 'active',
-        createdBy: admin._id
-      },
-      {
-        name: 'API Gateway',
-        description: 'Microservices API gateway and authentication service',
-        status: 'active',
-        createdBy: admin._id
-      },
-      {
-        name: 'Legacy System',
-        description: 'Old legacy system being phased out',
-        status: 'inactive',
-        createdBy: admin._id
-      }
-    ];
+    // Seed bugs
+    const bugsToSeed = mockBugs.map(bug => {
+      const project = projects[Math.floor(Math.random() * projects.length)];
+      const reporter = users.find(user => user.role === 'tester');
+      const assignee = users.find(user => user.role === 'developer');
+      return {
+        ...bug,
+        project: project._id,
+        reportedBy: reporter._id,
+        assignedTo: assignee._id
+      };
+    });
+    await Bug.insertMany(bugsToSeed);
+    console.log('✅ Bugs seeded successfully');
 
-    await Project.insertMany(projects);
-    console.log('✅ Initial projects created successfully');
   } catch (error) {
-    console.error('Error seeding projects:', error);
+    console.error('Error seeding database:', error);
   }
 };
 
-module.exports = { seedProjects };
+module.exports = { seedDatabase };

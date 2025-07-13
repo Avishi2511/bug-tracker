@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { mockProjects } from '../../../data/mockProjects';
 
 const MyBugsPage = () => {
   const navigate = useNavigate();
@@ -30,60 +31,9 @@ const MyBugsPage = () => {
     }
   };
 
-  // Mock data for bugs reported by current tester
-  const mockBugs = [
-    {
-      id: 1,
-      title: 'Search functionality not working',
-      description: 'The search bar does not return any results when typing',
-      status: 'open',
-      priority: 'high',
-      project: 'Web Application',
-      assignedTo: 'John Developer',
-      createdAt: '2024-01-16',
-      updatedAt: '2024-01-16'
-    },
-    {
-      id: 2,
-      title: 'Button alignment issue on mobile',
-      description: 'Submit button is misaligned on mobile devices',
-      status: 'in-progress',
-      priority: 'medium',
-      project: 'Web Application',
-      assignedTo: 'Mike Developer',
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-16'
-    },
-    {
-      id: 3,
-      title: 'Form validation error message',
-      description: 'Error message appears even when form is filled correctly',
-      status: 'closed',
-      priority: 'low',
-      project: 'Web Application',
-      assignedTo: 'John Developer',
-      createdAt: '2024-01-14',
-      updatedAt: '2024-01-15'
-    },
-    {
-      id: 4,
-      title: 'Dashboard loading timeout',
-      description: 'Dashboard takes more than 30 seconds to load',
-      status: 'in-progress',
-      priority: 'critical',
-      project: 'Web Application',
-      assignedTo: 'Sarah Developer',
-      createdAt: '2024-01-13',
-      updatedAt: '2024-01-16'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setBugs(mockBugs);
-      setFilteredBugs(mockBugs);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -256,9 +206,9 @@ const MyBugsPage = () => {
                   className="w-full px-3 py-2 bg-dark-bg border border-gray-600 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-red"
                 >
                   <option value="all">All Projects</option>
-                  <option value="Web Application">Web Application</option>
-                  <option value="Mobile App">Mobile App</option>
-                  <option value="API Service">API Service</option>
+                  {mockProjects.map(project => (
+                    <option key={project._id} value={project._id}>{project.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -267,7 +217,7 @@ const MyBugsPage = () => {
           {/* Bugs List */}
           <div className="fade-in space-y-4">
             {filteredBugs.map((bug) => (
-              <div key={bug.id} className="bg-card-bg p-6 rounded-xl border border-gray-700 hover:scale-105 transition-all duration-300">
+              <div key={bug._id} className="bg-card-bg p-6 rounded-xl border border-gray-700 hover:scale-105 transition-all duration-300">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-text-primary mb-2">{bug.title}</h3>
@@ -281,22 +231,22 @@ const MyBugsPage = () => {
                         {bug.priority.toUpperCase()}
                       </span>
                       <span className="px-3 py-1 rounded-full bg-gray-600 text-white text-xs font-medium">
-                        {bug.project}
+                        {bug.projectName}
                       </span>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-text-muted">Assigned to:</span>
-                        <div className="text-text-primary font-medium">{bug.assignedTo}</div>
+                        <div className="text-text-primary font-medium">{bug.assignedToName}</div>
                       </div>
                       <div>
                         <span className="text-text-muted">Created:</span>
-                        <div className="text-text-primary">{bug.createdAt}</div>
+                        <div className="text-text-primary">{new Date(bug.createdAt).toLocaleDateString()}</div>
                       </div>
                       <div>
                         <span className="text-text-muted">Last Updated:</span>
-                        <div className="text-text-primary">{bug.updatedAt}</div>
+                        <div className="text-text-primary">{new Date(bug.updatedAt).toLocaleDateString()}</div>
                       </div>
                     </div>
                   </div>
@@ -371,24 +321,24 @@ const MyBugsPage = () => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Project</label>
-                  <p className="text-text-muted">{selectedBug.project}</p>
+                  <p className="text-text-muted">{selectedBug.projectName}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Assigned To</label>
-                  <p className="text-text-muted">{selectedBug.assignedTo}</p>
+                  <p className="text-text-muted">{selectedBug.assignedToName}</p>
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Created</label>
-                  <p className="text-text-muted">{selectedBug.createdAt}</p>
+                  <p className="text-text-muted">{new Date(selectedBug.createdAt).toLocaleString()}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary mb-1">Last Updated</label>
-                  <p className="text-text-muted">{selectedBug.updatedAt}</p>
+                  <p className="text-text-muted">{new Date(selectedBug.updatedAt).toLocaleString()}</p>
                 </div>
               </div>
             </div>

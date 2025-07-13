@@ -32,42 +32,9 @@ const UserManagementPage = () => {
     }
   };
 
-  // Mock data
-  const mockUsers = [
-    {
-      id: 1,
-      fullName: 'Admin User',
-      email: 'admin@xyz.com',
-      role: 'admin',
-      status: 'active',
-      createdAt: '2024-01-01',
-      lastLogin: '2024-01-16'
-    },
-    {
-      id: 2,
-      fullName: 'John Developer',
-      email: 'john@xyz.com',
-      role: 'developer',
-      status: 'active',
-      createdAt: '2024-01-05',
-      lastLogin: '2024-01-15'
-    },
-    {
-      id: 3,
-      fullName: 'Jane Tester',
-      email: 'jane@xyz.com',
-      role: 'tester',
-      status: 'active',
-      createdAt: '2024-01-10',
-      lastLogin: '2024-01-14'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setUsers(mockUsers);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -197,8 +164,8 @@ const UserManagementPage = () => {
                 <tbody className="divide-y divide-gray-700">
                   {users.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-800 transition-colors">
-                      <td className="px-6 py-4 text-sm text-text-primary">#{user.id}</td>
-                      <td className="px-6 py-4 text-sm text-text-primary font-medium">{user.fullName}</td>
+                      <td className="px-6 py-4 text-sm text-text-primary">#{user._id.slice(-6)}</td>
+                      <td className="px-6 py-4 text-sm text-text-primary font-medium">{`${user.firstName} ${user.lastName}`}</td>
                       <td className="px-6 py-4 text-sm text-text-muted">{user.email}</td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-white text-xs font-medium ${getRoleColor(user.role)}`}>
@@ -210,8 +177,8 @@ const UserManagementPage = () => {
                           {user.status.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{user.createdAt}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{user.lastLogin}</td>
+                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(user.createdAt).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(user.lastLogin).toLocaleString()}</td>
                       <td className="px-6 py-4">
                         <div className="flex space-x-2">
                           <button className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { getTesterDashboardStats } from '../../../data/mockStats';
 
 const TesterDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -10,21 +11,13 @@ const TesterDashboard = () => {
       open: 0,
       inProgress: 0,
       closed: 0
-    }
+    },
+    recentReports: []
   });
 
   useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      setStats({
-        bugsReported: 28,
-        statusBreakdown: {
-          open: 8,
-          inProgress: 12,
-          closed: 8
-        }
-      });
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty stats
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');
@@ -142,49 +135,26 @@ const TesterDashboard = () => {
             <h2 className="text-2xl font-bold text-text-primary mb-6">Recent Bug Reports</h2>
             <div className="bg-card-bg p-6 rounded-xl border border-gray-700">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">Search functionality not working</div>
-                    <div className="text-text-muted text-sm">Bug #028 • Reported 1 hour ago</div>
+                {stats.recentReports.map(bug => (
+                  <div key={bug.id} className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
+                    <div>
+                      <div className="text-text-primary font-medium">{bug.title}</div>
+                      <div className="text-text-muted text-sm">{bug.bugId} • Reported {bug.reportedAt}</div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-3 py-1 text-white text-sm rounded-full ${
+                        bug.status === 'open' ? 'bg-red-600' : bug.status === 'in-progress' ? 'bg-yellow-600' : 'bg-green-600'
+                      }`}>
+                        {bug.status.charAt(0).toUpperCase() + bug.status.slice(1).replace('-', ' ')}
+                      </span>
+                      <span className={`px-3 py-1 text-white text-sm rounded-full ${
+                        bug.priority === 'critical' ? 'bg-red-600' : bug.priority === 'high' ? 'bg-orange-600' : bug.priority === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                      }`}>
+                        {bug.priority.charAt(0).toUpperCase() + bug.priority.slice(1)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-red-600 text-white text-sm rounded-full">Open</span>
-                    <span className="px-3 py-1 bg-orange-600 text-white text-sm rounded-full">High</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">Button alignment issue on mobile</div>
-                    <div className="text-text-muted text-sm">Bug #027 • Reported 3 hours ago</div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-yellow-600 text-white text-sm rounded-full">In Progress</span>
-                    <span className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full">Medium</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">Form validation error message</div>
-                    <div className="text-text-muted text-sm">Bug #026 • Reported yesterday</div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-green-600 text-white text-sm rounded-full">Closed</span>
-                    <span className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full">Low</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">Dashboard loading timeout</div>
-                    <div className="text-text-muted text-sm">Bug #025 • Reported 2 days ago</div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-yellow-600 text-white text-sm rounded-full">In Progress</span>
-                    <span className="px-3 py-1 bg-red-600 text-white text-sm rounded-full">Critical</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { getBugsByAssignee } from '../../../data/mockBugs';
+import { mockProjects } from '../../../data/mockProjects';
+import { mockUsers } from '../../../data/mockUsers';
 
 const AssignedBugsPage = () => {
   const navigate = useNavigate();
@@ -31,64 +34,9 @@ const AssignedBugsPage = () => {
     }
   };
 
-  // Mock data for bugs assigned to current developer
-  const mockBugs = [
-    {
-      id: 1,
-      title: 'Login authentication failure',
-      description: 'Users cannot log in with valid credentials. The system returns "Invalid credentials" even with correct username and password.',
-      status: 'open',
-      priority: 'critical',
-      project: 'Web Application',
-      reportedBy: 'Jane Tester',
-      createdAt: '2024-01-16',
-      updatedAt: '2024-01-16',
-      stepsToReproduce: '1. Go to login page\n2. Enter valid credentials\n3. Click login button\n4. Observe error message',
-      expectedBehavior: 'User should be logged in and redirected to dashboard',
-      actualBehavior: 'Error message appears saying "Invalid credentials"',
-      environment: 'Production',
-      browserVersion: 'Chrome 120.0'
-    },
-    {
-      id: 2,
-      title: 'Dashboard loading performance issue',
-      description: 'Dashboard takes too long to load user data and statistics',
-      status: 'in-progress',
-      priority: 'high',
-      project: 'Web Application',
-      reportedBy: 'Sarah Tester',
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-16',
-      stepsToReproduce: '1. Login to application\n2. Navigate to dashboard\n3. Wait for page to load',
-      expectedBehavior: 'Dashboard should load within 3 seconds',
-      actualBehavior: 'Dashboard takes 15-20 seconds to load',
-      environment: 'Production',
-      browserVersion: 'Firefox 121.0'
-    },
-    {
-      id: 3,
-      title: 'Minor UI alignment issue in sidebar',
-      description: 'Sidebar menu items are slightly misaligned on smaller screens',
-      status: 'closed',
-      priority: 'low',
-      project: 'Web Application',
-      reportedBy: 'Public User',
-      createdAt: '2024-01-10',
-      updatedAt: '2024-01-12',
-      stepsToReproduce: '1. Open application on mobile device\n2. Navigate to any page with sidebar\n3. Observe menu alignment',
-      expectedBehavior: 'Menu items should be properly aligned',
-      actualBehavior: 'Menu items appear slightly off-center',
-      environment: 'Production',
-      browserVersion: 'Mobile Safari'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setBugs(mockBugs);
-      setFilteredBugs(mockBugs);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -303,7 +251,7 @@ const AssignedBugsPage = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
                       <h3 className="text-lg font-bold text-text-primary">{bug.title}</h3>
-                      <span className="text-text-muted text-sm">#{bug.id}</span>
+                      <span className="text-text-muted text-sm">#{bug._id.slice(-6)}</span>
                     </div>
                     
                     <p className="text-text-muted text-sm mb-4">{bug.description}</p>
@@ -316,22 +264,22 @@ const AssignedBugsPage = () => {
                         {bug.priority.toUpperCase()}
                       </span>
                       <span className="px-3 py-1 rounded-full bg-gray-600 text-white text-xs font-medium">
-                        {bug.project}
+                        {bug.projectName}
                       </span>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-text-muted">Reported by:</span>
-                        <div className="text-text-primary font-medium">{bug.reportedBy}</div>
+                        <div className="text-text-primary font-medium">{bug.reportedByName}</div>
                       </div>
                       <div>
                         <span className="text-text-muted">Created:</span>
-                        <div className="text-text-primary">{bug.createdAt}</div>
+                        <div className="text-text-primary">{new Date(bug.createdAt).toLocaleDateString()}</div>
                       </div>
                       <div>
                         <span className="text-text-muted">Last Updated:</span>
-                        <div className="text-text-primary">{bug.updatedAt}</div>
+                        <div className="text-text-primary">{new Date(bug.updatedAt).toLocaleDateString()}</div>
                       </div>
                     </div>
                   </div>
@@ -470,13 +418,13 @@ const AssignedBugsPage = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">Reported By</label>
-                    <p className="text-text-muted">{selectedBug.reportedBy}</p>
-                  </div>
+                  <label className="block text-sm font-medium text-text-primary mb-1">Reported By</label>
+                  <p className="text-text-muted">{selectedBug.reportedByName}</p>
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">Created</label>
-                    <p className="text-text-muted">{selectedBug.createdAt}</p>
+                <div>
+                  <label className="block text-sm font-medium text-text-primary mb-1">Created</label>
+                  <p className="text-text-muted">{new Date(selectedBug.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
               </div>

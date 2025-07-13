@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { mockProjects } from '../../../data/mockProjects';
 
 const ProjectManagementPage = () => {
   const navigate = useNavigate();
@@ -31,47 +32,9 @@ const ProjectManagementPage = () => {
     }
   };
 
-  // Mock data
-  const mockProjects = [
-    {
-      id: 1,
-      name: 'Web Application',
-      description: 'Main web application for bug tracking',
-      status: 'active',
-      createdAt: '2024-01-01',
-      bugsCount: 15
-    },
-    {
-      id: 2,
-      name: 'Mobile Application',
-      description: 'iOS and Android mobile app',
-      status: 'active',
-      createdAt: '2024-01-05',
-      bugsCount: 8
-    },
-    {
-      id: 3,
-      name: 'API Service',
-      description: 'Backend API service',
-      status: 'active',
-      createdAt: '2024-01-10',
-      bugsCount: 5
-    },
-    {
-      id: 4,
-      name: 'Legacy System',
-      description: 'Old system being phased out',
-      status: 'archived',
-      createdAt: '2023-12-01',
-      bugsCount: 2
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setProjects(mockProjects);
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty arrays
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left');
@@ -190,7 +153,7 @@ const ProjectManagementPage = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-text-muted">Created:</span>
-                    <span className="text-text-primary">{project.createdAt}</span>
+                    <span className="text-text-primary">{new Date(project.createdAt).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-text-muted">Bugs:</span>
@@ -245,7 +208,7 @@ const ProjectManagementPage = () => {
                 <tbody className="divide-y divide-gray-700">
                   {projects.map((project) => (
                     <tr key={project.id} className="hover:bg-gray-800 transition-colors">
-                      <td className="px-6 py-4 text-sm text-text-primary">#{project.id}</td>
+                      <td className="px-6 py-4 text-sm text-text-primary">#{project._id.slice(-6)}</td>
                       <td className="px-6 py-4 text-sm text-text-primary font-medium">{project.name}</td>
                       <td className="px-6 py-4 text-sm text-text-muted">{project.description}</td>
                       <td className="px-6 py-4">
@@ -254,7 +217,7 @@ const ProjectManagementPage = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-text-primary">{project.bugsCount}</td>
-                      <td className="px-6 py-4 text-sm text-text-muted">{project.createdAt}</td>
+                      <td className="px-6 py-4 text-sm text-text-muted">{new Date(project.createdAt).toLocaleDateString()}</td>
                       <td className="px-6 py-4">
                         <div className="flex space-x-2">
                           <button className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-white text-xs transition-colors">

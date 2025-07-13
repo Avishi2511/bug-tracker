@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/common/Navbar';
+import { getAdminDashboardStats } from '../../../data/mockStats';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({
     totalBugs: 0,
     activeUsers: 0,
-    activeProjects: 0
+    activeProjects: 0,
+    recentActivity: []
   });
 
   useEffect(() => {
-    // Mock data loading
-    setTimeout(() => {
-      setStats({
-        totalBugs: 247,
-        activeUsers: 18,
-        activeProjects: 5
-      });
-    }, 500);
+    // Data fetching logic will go here
+    // For now, we'll just initialize with empty stats
 
     // Animation trigger
     const elements = document.querySelectorAll('.fade-in, .slide-in-left, .scale-in');
@@ -146,27 +142,21 @@ const AdminDashboard = () => {
             <h2 className="text-2xl font-bold text-text-primary mb-6">Recent Activity</h2>
             <div className="bg-card-bg p-6 rounded-xl border border-gray-700">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">New bug reported: Login page crash</div>
-                    <div className="text-text-muted text-sm">2 minutes ago</div>
+                {stats.recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
+                    <div>
+                      <div className="text-text-primary font-medium">{activity.message}</div>
+                      <div className="text-text-muted text-sm">{activity.timestamp}</div>
+                    </div>
+                    <span className={`px-3 py-1 text-white text-sm rounded-full ${
+                      activity.type === 'bug' 
+                        ? activity.priority === 'critical' ? 'bg-accent-red' : 'bg-blue-600'
+                        : 'bg-green-600'
+                    }`}>
+                      {activity.type === 'bug' ? activity.priority : 'New User'}
+                    </span>
                   </div>
-                  <span className="px-3 py-1 bg-accent-red text-white text-sm rounded-full">Critical</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">User John Doe registered</div>
-                    <div className="text-text-muted text-sm">15 minutes ago</div>
-                  </div>
-                  <span className="px-3 py-1 bg-green-600 text-white text-sm rounded-full">New User</span>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-dark-bg rounded-lg">
-                  <div>
-                    <div className="text-text-primary font-medium">Bug #123 marked as resolved</div>
-                    <div className="text-text-muted text-sm">1 hour ago</div>
-                  </div>
-                  <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full">Resolved</span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
