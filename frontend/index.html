@@ -4,19 +4,202 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XYZ Corp Bug Tracker</title>
+    <title>BugTracker Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .bounce-in {
+            animation: bounceIn 1s ease-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .icon-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .icon-hover:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-slide-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-slide-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-fade-in.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-slide-left.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .section-slide-right.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .section-scale-in.animate-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        @keyframes sectionFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes sectionSlideLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes sectionSlideRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes sectionScaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .hero-animation {
+            animation: heroEntrance 1.2s ease-out;
+        }
+        
+        @keyframes heroEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'dark-bg': '#000000',
-                        'card-bg': '#1E293B',
-                        'text-primary': '#E2E8F0',
-                        'accent-red': '#EF4444',
-                        'accent-coral': '#F87171',
-                        'text-muted': '#94A3B8'
+                        'dark-bg': '#0f172a',
+                        'card-bg': '#1e293b',
+                        'text-primary': '#e2e8f0',
+                        'accent-red': '#ef4444',
+                        'accent-coral': '#f87171',
+                        'text-muted': '#94a3b8'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }

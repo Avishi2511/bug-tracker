@@ -82,7 +82,6 @@ dist
 
 # Gatsby files
 .cache/
-public
 
 # Vite build outputs
 dist/
@@ -201,7 +200,10 @@ dist
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
 # https://nextjs.org/blog/next-9-1#public-directory-support
-# public
+# Only ignore public directories that are build outputs, not source code
+/public
+frontend/public
+backend/public
 
 # vuepress build output
 .vuepress/dist
