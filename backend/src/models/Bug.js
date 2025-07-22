@@ -47,13 +47,16 @@ const bugSchema = new mongoose.Schema({
     },
     name: {
       type: String,
-      required: function() { return this.reporter.type === 'public'; },
       maxlength: [100, 'Reporter name cannot exceed 100 characters']
     },
     email: {
       type: String,
-      validate: [validator.isEmail, 'Invalid email'],
-      required: function() { return this.reporter.type === 'public'; }
+      validate: {
+        validator: function(email) {
+          return !email || validator.isEmail(email);
+        },
+        message: 'Invalid email format'
+      }
     }
   },
   assignedTo: {

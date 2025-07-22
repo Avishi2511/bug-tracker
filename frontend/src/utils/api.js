@@ -30,6 +30,7 @@ export const getCurrentUser = () => api.get('/auth/me');
 
 // Public bug reporting
 export const reportBugPublic = (bugData) => api.post('/public/bugs', bugData);
+export const getPublicProjects = () => api.get('/public/projects');
 
 // User Management
 export const getUsers = () => api.get('/users');

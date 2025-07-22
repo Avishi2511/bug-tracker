@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getPublicProjects, reportBugPublic } from '../../utils/api';
 
 const PublicBugReportPage = () => {
   const [formData, setFormData] = useState({
@@ -14,13 +15,8 @@ const PublicBugReportPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [bugId, setBugId] = useState('');
-
-  const projects = [
-    { id: 'web-app', name: 'Web Application' },
-    { id: 'mobile-app', name: 'Mobile Application' },
-    { id: 'api', name: 'API Service' },
-    { id: 'desktop', name: 'Desktop Application' }
-  ];
+  const [projects, setProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
 
   const priorities = [
     { value: 'low', label: 'Low', color: 'bg-blue-600', borderColor: 'border-blue-600' },
@@ -28,6 +24,28 @@ const PublicBugReportPage = () => {
     { value: 'high', label: 'High', color: 'bg-orange-600', borderColor: 'border-orange-600' },
     { value: 'critical', label: 'Critical', color: 'bg-accent-red', borderColor: 'border-accent-red' }
   ];
+
+  // Fetch projects on component mount
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setProjectsLoading(true);
+        const response = await getPublicProjects();
+        if (response.data.success) {
+          setProjects(response.data.data.projects);
+        } else {
+          setErrors(prev => ({ ...prev, projects: 'Failed to load projects' }));
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setErrors(prev => ({ ...prev, projects: 'Failed to load projects' }));
+      } finally {
+        setProjectsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,14 +95,29 @@ const PublicBugReportPage = () => {
     
     setIsLoading(true);
     try {
-      // Mock API call - replace with real API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Prepare bug data for submission
+      const bugData = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        priority: formData.priority,
+        project: formData.project,
+        reporterName: formData.reporterName.trim() || undefined,
+        reporterEmail: formData.reporterEmail.trim() || undefined
+      };
+
+      const response = await reportBugPublic(bugData);
       
-      const generatedBugId = `#${Math.floor(Math.random() * 90000) + 10000}`;
-      setBugId(generatedBugId);
-      setIsSubmitted(true);
+      if (response.data.success) {
+        // Use the actual bug ID from the response
+        setBugId(`#${response.data.data.bug.id}`);
+        setIsSubmitted(true);
+      } else {
+        setErrors({ submit: response.data.message || 'Failed to submit bug report. Please try again.' });
+      }
     } catch (error) {
-      setErrors({ submit: 'Failed to submit bug report. Please try again.' });
+      console.error('Error submitting bug report:', error);
+      const errorMessage = error.response?.data?.message || 'Failed to submit bug report. Please try again.';
+      setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -148,19 +181,25 @@ const PublicBugReportPage = () => {
                       name="project"
                       value={formData.project}
                       onChange={handleChange}
+                      disabled={projectsLoading}
                       className={`w-full px-4 py-3 bg-white border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-accent-red focus:border-transparent transition-all ${
                         errors.project ? 'border-accent-red' : 'border-gray-300'
-                      }`}
+                      } ${projectsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                      <option value="">Select a project...</option>
+                      <option value="">
+                        {projectsLoading ? 'Loading projects...' : 'Select a project...'}
+                      </option>
                       {projects.map(project => (
-                        <option key={project.id} value={project.id}>
+                        <option key={project._id} value={project._id}>
                           {project.name}
                         </option>
                       ))}
                     </select>
                     {errors.project && (
                       <p className="mt-1 text-sm text-accent-red">{errors.project}</p>
+                    )}
+                    {errors.projects && (
+                      <p className="mt-1 text-sm text-accent-red">{errors.projects}</p>
                     )}
                   </div>
 

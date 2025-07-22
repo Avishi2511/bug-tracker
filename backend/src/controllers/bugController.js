@@ -342,16 +342,25 @@ const createPublicBug = async (req, res) => {
       });
     }
 
+    // Build reporter object with optional fields
+    const reporter = {
+      type: 'public'
+    };
+    
+    if (reporterName && reporterName.trim()) {
+      reporter.name = reporterName.trim();
+    }
+    
+    if (reporterEmail && reporterEmail.trim()) {
+      reporter.email = reporterEmail.trim();
+    }
+
     const bug = new Bug({
       title,
       description,
       priority,
       project,
-      reporter: {
-        type: 'public',
-        name: reporterName,
-        email: reporterEmail
-      }
+      reporter
     });
 
     await bug.save();

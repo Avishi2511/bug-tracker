@@ -92,11 +92,11 @@ const validatePublicBugCreation = [
     .isMongoId()
     .withMessage('Valid project ID is required'),
   body('reporterName')
-    .notEmpty()
-    .withMessage('Reporter name is required')
+    .optional()
     .isLength({ max: 100 })
     .withMessage('Reporter name cannot exceed 100 characters'),
   body('reporterEmail')
+    .optional()
     .isEmail()
     .withMessage('Please provide a valid email'),
   validateRequest

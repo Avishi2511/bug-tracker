@@ -14,9 +14,21 @@ const getProjects = async (req, res) => {
       .populate('createdBy', 'firstName lastName username')
       .sort({ createdAt: -1 });
 
+    // Get bug counts for each project
+    const Bug = require('../models/Bug');
+    const projectsWithBugCounts = await Promise.all(
+      projects.map(async (project) => {
+        const bugCount = await Bug.countDocuments({ project: project._id });
+        return {
+          ...project.toObject(),
+          bugsCount: bugCount
+        };
+      })
+    );
+
     res.json({
       success: true,
-      data: { projects }
+      data: { projects: projectsWithBugCounts }
     });
   } catch (error) {
     console.error('Get projects error:', error);

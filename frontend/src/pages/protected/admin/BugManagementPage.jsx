@@ -89,7 +89,11 @@ const BugManagementPage = () => {
     }
 
     if (filters.project !== 'all') {
-      filtered = filtered.filter(bug => bug.project === filters.project);
+      filtered = filtered.filter(bug => {
+        // Handle both cases: bug.project as object or string
+        const projectId = typeof bug.project === 'object' ? bug.project._id : bug.project;
+        return projectId === filters.project;
+      });
     }
 
     if (filters.search) {
