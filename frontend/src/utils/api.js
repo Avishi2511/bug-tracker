@@ -1,6 +1,29 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Determine API URL based on environment
+const getApiUrl = () => {
+  // If VITE_API_URL is explicitly set, use it
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // If in production and no explicit API URL, use the production backend
+  if (import.meta.env.PROD) {
+    return 'https://bug-tracker-3dlf.onrender.com/api';
+  }
+  
+  // Default to local development
+  return 'http://localhost:5000/api';
+};
+
+const API_URL = getApiUrl();
+
+// Log the API URL for debugging (only in development)
+if (import.meta.env.DEV) {
+  console.log('🔗 API URL:', API_URL);
+  console.log('🌍 Environment:', import.meta.env.MODE);
+  console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
+}
 
 const api = axios.create({
   baseURL: API_URL,
