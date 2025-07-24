@@ -18,12 +18,12 @@ const getApiUrl = () => {
 
 const API_URL = getApiUrl();
 
-// Log the API URL for debugging (in all environments for now)
-console.log('🔗 API URL:', API_URL);
-console.log('🌍 Environment:', import.meta.env.MODE);
-console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
-console.log('🏭 PROD:', import.meta.env.PROD);
-console.log('🛠️ DEV:', import.meta.env.DEV);
+// Log the API URL for debugging (only in development)
+if (import.meta.env.DEV) {
+  console.log('🔗 API URL:', API_URL);
+  console.log('🌍 Environment:', import.meta.env.MODE);
+  console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
+}
 
 const api = axios.create({
   baseURL: API_URL,
